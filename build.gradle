@@ -1,0 +1,167 @@
+buildscript {
+    repositories {
+        jcenter()
+        mavenCentral()
+    }
+}
+
+plugins {
+    id 'com.github.johnrengelman.shadow' version '5.1.0'
+    id 'kr.entree.spigradle' version '1.2.1'
+    id 'java'
+    id 'jacoco'
+    id 'com.diffplug.gradle.spotless' version '3.28.1'
+}
+
+apply from: "$rootDir/gradle/jacoco.gradle"
+apply from: "$rootDir/gradle/spotless.gradle"
+apply from: "$rootDir/gradle/publish.gradle"
+
+sourceCompatibility = 11
+targetCompatibility = 11
+
+ext {
+    //Define one of the supported mc versions
+    mcVersion = project.property("mcVersion")
+    packageName = project.property("packageName")
+    junitVersion = '5.6.2'
+    guavaVersion = '29.0-jre'
+    immutablesVersion = '2.8.7'
+    errorproneVersion = '2.3.4'
+}
+
+group project.property("group")
+
+spigot {
+    authors = [project.property("author")]
+    apiVersion = project.property("apiVersion")
+    load = STARTUP
+    //    depends = ['']
+}
+
+compileJava {
+    options.encoding = 'UTF-8'
+    options.compilerArgs += ["-parameters"]
+    options.fork = true
+    options.forkOptions.executable = 'javac'
+}
+
+archivesBaseName = project.property("pluginName")
+
+repositories {
+    mavenCentral()
+    jcenter()
+
+    //Added spigot repository
+    maven {
+        name = 'Spigot'
+        url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
+
+        content {
+            includeGroup 'org.bukkit'
+            includeGroup 'org.spigotmc'
+        }
+    }
+
+    maven { url = 'https://artifactory.silthus.net/artifactory/libs-release' }
+    maven { url = 'https://artifactory.silthus.net/artifactory/libs-snapshot' }
+
+    maven { url = 'https://oss.sonatype.org/content/repositories/snapshots' }
+    maven { url = 'https://oss.sonatype.org/content/repositories/central' }
+
+    //Add your repositories here
+    maven { url = "https://repo.aikar.co/content/groups/aikar/" }
+}
+
+dependencies {
+    //Adds the spigot api to your plugin
+    compileOnly "org.spigotmc:spigot-api:${mcVersion}-R0.1-SNAPSHOT"
+
+    //Add your dependencies here
+
+    //Test dependencies
+    testImplementation "org.mockito:mockito-core:3.+"
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'com.github.seeseemelk:MockBukkit-v1.15:0.3.0-SNAPSHOT'
+}
+
+test {
+    useJUnit()
+}
+
+shadowJar {
+    classifier = ''
+    relocate 'co.aikar.commands', "${packageName}.acf"
+    relocate 'co.aikar.locales', "${packageName}.locales"
+}
+
+processResources {
+    project.properties.put("version", this.version)
+    expand project.properties
+}
+
+task cleanPlugin() {
+    group 'deploy'
+    description 'Cleans the plugin in the working directory up'
+    delete 'working/plugins/' + project.property("pluginName") + '-' + project.version.toString() + '.jar'
+}
+
+task copyPluginYaml(type: Copy, dependsOn: spigotPluginYaml) {
+    from(new File(spigotPluginYaml.temporaryDir, "plugin.yml"))
+    into(sourceSets.main.resources.srcDirs[0])
+}
+
+task deploy(type: Copy, dependsOn: [
+    'cleanPlugin',
+    'spotlessApply',
+    'jar'
+]) {
+    group 'deploy'
+    description 'Exports you plugin to the plugin directory in your test server'
+
+    def pluginFolder = project.property('pluginFolder').toString()
+
+    from shadowJar
+    into pluginFolder.isEmpty() ? 'working/plugins' : pluginFolder
+}
+
+task setupServer {
+    group 'server'
+    description 'Downloads the server jar'
+
+    def server = new File('working/server.jar')
+
+    if (server.exists()) {
+        server.delete()
+    }
+
+    def url = ''
+    switch (mcVersion) {
+        case '1.8.8':
+            url = 'https://cdn.getbukkit.org/spigot/spigot-1.8.8-R0.1-SNAPSHOT-latest.jar'
+            break
+
+        case '1.12.2':
+            url = 'https://cdn.getbukkit.org/spigot/spigot-1.12.2.jar'
+            break
+
+        case '1.13.2':
+            url = 'https://cdn.getbukkit.org/spigot/spigot-1.13.2.jar'
+            break
+
+        case '1.14.4':
+            url = 'https://cdn.getbukkit.org/spigot/spigot-1.14.4.jar'
+            break
+        case '1.15.2':
+            url = 'https://cdn.getbukkit.org/spigot/spigot-1.15.2.jar'
+            break
+    }
+
+    if (url.isEmpty()) {
+        throw new GradleException('NOT A SUPPORTED VERSION, PLEASE USE [1.8.8, 1.12.2, 1.13.2, 1.14.4, 1.15.2]!')
+    }
+
+    new URL(url).withInputStream { i -> server.withOutputStream { it << i } }
+}
+
+defaultTasks 'spotlessApply', 'build', 'deploy'
