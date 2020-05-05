@@ -1,24 +1,41 @@
-[![Build Status](https://github.com/mcSilthus/spigot-plugin-template/workflows/Build/badge.svg)](https://github.com/mcSilthus/spigot-plugin-template/actions?query=workflow%3ABuild)
-[![GitHub release (latest SemVer including pre-releases)](https://img.shields.io/github/v/release/mcSilthus/spigot-plugin-template?include_prereleases&label=release)](https://github.com/mcSilthus/spigot-plugin-template)
+[![Build Status](https://github.com/mcSilthus/sLimits/workflows/Build/badge.svg)](https://github.com/mcSilthus/spigot-plugin-template/actions?query=workflow%3ABuild)
+[![GitHub release (latest SemVer including pre-releases)](https://img.shields.io/github/v/release/mcSilthus/sLimits?include_prereleases&label=release)](https://github.com/mcSilthus/sLimits)
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 
-# Workspace Setup
+# sLimits
 
 > This project is part of a pay what you want open source initiative.
 >
 > [Find out more on the Spigot forums!](https://www.spigotmc.org/threads/open-small-to-medium-plugin-development-pay-what-you-want-8-years-experience-high-quality.435578/)
 
-You can use this template to develop your own Spigot plugins with [Gradle](https://gradle.org/).
+This plugin was requested by Trevor with the following features.
+
+## Features
+
+It is a similar copy of https://www.spigotmc.org/resources/limits.29791/
+i don't need all the other plugin integration. just the permission groups
+
+I am trying to limit the placement of blocks based on groups.
+
+### Limit
+
+- Limit the amount of a single block that a player can place
+- when a block of a certain type is placed it is added to their limit and when a block is broken it is removed from the list
+- I am using Towny so if a player is not able to place the block it shouldn't add to the list.
+- Vault intergration
+- "/limit" to see what the players limits are.
+
+### View
+
+- A gui of where blocks are placed [at most would have like 15 placed]
+- "/limit view"
+- Would show the cords of the block is placed
 
 ## Supported Versions
 
 | Version | Support |
 | ------- | :-----: |
-| 1.8.8   |   ✔️    |
-| 1.12.2  |   ✔️    |
-| 1.13.2  |   ✔️    |
-| 1.14.4  |   ✔️    |
 | 1.15.2  |   ✔️    |
 
 ## Setup Template
