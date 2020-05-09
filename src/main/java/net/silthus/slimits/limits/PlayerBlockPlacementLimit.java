@@ -25,7 +25,7 @@ public class PlayerBlockPlacementLimit {
     }
 
     public int addBlock(Block block) {
-        int currentCount = counts.getOrDefault(block.getType(), 0);
+        int currentCount = getCount(block.getType());
         currentCount++;
 
         counts.put(block.getType(), currentCount);
@@ -35,6 +35,32 @@ public class PlayerBlockPlacementLimit {
     }
 
     public int getCount(Material blockType) {
+        if (!getCounts().containsKey(blockType)) {
+            getCounts().put(blockType, 0);
+        }
         return counts.getOrDefault(blockType, 0);
+    }
+
+    public boolean hasPlacedBlock(Block block) {
+
+        return getLocations().contains(block.getLocation());
+    }
+
+    public int removeBlock(Block block) {
+
+        Material blockType = block.getType();
+        int count = getCount(blockType);
+
+        if (getLocations().remove(block.getLocation())) {
+            count--;
+            getCounts().put(blockType, count);
+        }
+
+        if (count < 0) {
+            count = 0;
+            getCounts().remove(blockType);
+        }
+
+        return count;
     }
 }

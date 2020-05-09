@@ -20,12 +20,12 @@
 The plugin currently supports the following features. Please [open a feature request](https://github.com/Silthus/sLimits/issues/new?assignees=&labels=&template=feature_request.md&title=) if you want a feature added.
 
 * Limiting block placement based on configs inside `limits/`
+* Destroying previously placed blocks decreases the limit counter
 
 ### Current Limitations
 
 This is a **alpha** release and has the following limitations
 
-* Breaking blocks does not decrease the counter
 * Placed blocks are only stored in memory and not persisted thru server restarts
 
 ## Installation
@@ -35,12 +35,12 @@ Simply drop the plugin into your `plugins` folder and restart your server.
 ## Configuration
 
 You can configure your limits by creating a limit config inside the `limits/` directory.
-Currently the config only supports a `limits` section where you can define the blocks and their amount that players are allowed to place.
+Currently the config only supports a `blocks` section where you can define the blocks and their amount that players are allowed to place.
 
 > **Note:** The name of the block type must be in UPPERCASE.
 
 ```yaml
-limits:
+blocks:
     DIRT: 10
     BEDROCK: 5
 ```

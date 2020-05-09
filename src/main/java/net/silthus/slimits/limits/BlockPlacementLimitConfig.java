@@ -20,7 +20,7 @@ public class BlockPlacementLimitConfig extends BukkitYamlConfiguration {
     private LimitMode mode = LimitMode.WHITELIST;
 
     @Convert(MaterialMapConverter.class)
-    private Map<Material, Integer> limits = new HashMap<>();
+    private Map<Material, Integer> blocks = new HashMap<>();
 
     public BlockPlacementLimitConfig(Path path, BukkitYamlProperties properties) {
         super(path, properties);
@@ -31,6 +31,10 @@ public class BlockPlacementLimitConfig extends BukkitYamlConfiguration {
     }
 
     public Optional<Integer> getLimit(Material blockType) {
-        return Optional.ofNullable(getLimits().get(blockType));
+        return Optional.ofNullable(getBlocks().get(blockType));
+    }
+
+    public boolean hasLimit(Material blockType) {
+        return getBlocks().containsKey(blockType);
     }
 }

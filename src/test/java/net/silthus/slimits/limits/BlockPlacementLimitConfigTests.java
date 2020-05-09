@@ -48,7 +48,7 @@ public class BlockPlacementLimitConfigTests {
     @Test
     @DisplayName("should load block map with limits")
     public void shouldLoadBlockMapLimits() {
-        Map<Material, Integer> blocks = config.getLimits();
+        Map<Material, Integer> blocks = config.getBlocks();
 
         assertThat(blocks)
                 .isNotNull()
@@ -75,6 +75,6 @@ public class BlockPlacementLimitConfigTests {
 
         assertThat(config.getMode()).isEqualTo(LimitMode.WHITELIST);
 
-        assertThat(config.getLimits()).isNotNull().hasSize(2);
+        assertThat(config.getBlocks()).isNotNull().hasSize(2);
     }
 }

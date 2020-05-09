@@ -1,4 +1,4 @@
 mode: BLACKLIST
-limits:
+blocks:
   BEDROCK: 5
   DIRT: 2
