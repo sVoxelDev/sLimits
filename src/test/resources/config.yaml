@@ -1,0 +1,14 @@
+# flat is the only supported storage type at the moment
+storage: flat
+limits:
+  - type: 'block-placement'
+    id: 'bedrock'
+    mode: 'WHITELIST' # default
+    blocks:
+      BEDROCK: 5
+  # block-placement limits without permissions are global
+  - type: 'block-placement'
+    id: 'dirt-stone'
+    blocks:
+      DIRT: 5
+      STONE: 2

@@ -1,0 +1,4 @@
+mode: BLACKLIST
+limits:
+  BEDROCK: 5
+  DIRT: 2

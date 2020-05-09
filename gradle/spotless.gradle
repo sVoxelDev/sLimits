@@ -2,11 +2,12 @@ spotless {
     java {
         removeUnusedImports()
         googleJavaFormat()
+        indentWithSpaces(4)
     }
     groovyGradle {
         target '**/*.gradle'
         greclipse()
-        indentWithSpaces()
+        indentWithSpaces(4)
         paddedCell()
     }
 }
