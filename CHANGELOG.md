@@ -1,3 +1,10 @@
+# 1.0.0-alpha.1 (2020-05-09)
+
+
+### Features
+
+* **limits:** configure limits with configs in the limits directory ([62526bf](https://github.com/Silthus/sLimits/commit/62526bf6a0d0d60f1e94ac28aa1b10df306135cc)), closes [#1](https://github.com/Silthus/sLimits/issues/1)
+
 # 1.0.0 (2020-05-05)
 
 
