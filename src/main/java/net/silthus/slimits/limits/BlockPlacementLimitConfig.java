@@ -1,5 +1,6 @@
 package net.silthus.slimits.limits;
 
+import de.exlll.configlib.annotation.ConfigurationElement;
 import de.exlll.configlib.annotation.Convert;
 import de.exlll.configlib.configs.yaml.BukkitYamlConfiguration;
 import lombok.Getter;
@@ -15,6 +16,7 @@ import java.util.Optional;
 
 @Getter
 @Setter
+@ConfigurationElement
 public class BlockPlacementLimitConfig extends BukkitYamlConfiguration {
 
     private LimitMode mode = LimitMode.WHITELIST;

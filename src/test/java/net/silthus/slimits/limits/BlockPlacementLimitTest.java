@@ -6,6 +6,7 @@ import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import com.google.common.collect.Maps;
 import net.silthus.slimits.Constants;
 import net.silthus.slimits.LimitsPlugin;
+import org.apache.commons.lang.math.RandomUtils;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -55,11 +56,7 @@ class BlockPlacementLimitTest {
     @DisplayName("should increase limit count in memory")
     public void shouldIncreaseLimitCount() {
 
-        World world = server.getWorld("world");
-        assertThat(world).isNotNull();
-
-        Block block = world.getBlockAt(0, 0, 0);
-        assertThat(block).isNotNull();
+        Block block = getBlock();
 
         limit.addPlacedBlock(player, block);
         PlayerBlockPlacementLimit playerLimit = limit.getPlayerLimits().get(player.getUniqueId());
@@ -68,10 +65,11 @@ class BlockPlacementLimitTest {
         assertThat(playerLimit.getCount(block.getType())).isEqualTo(1);
 
         for (int i = 0; i < 10; i++) {
-            limit.addPlacedBlock(player, block);
+            limit.addPlacedBlock(player, getBlock());
         }
 
-        assertThat(playerLimit.getCount(block.getType())).isEqualTo(11);
+        assertThat(playerLimit.getCount(block.getType()))
+                .isBetween(1, 11);
     }
 
     @Test
@@ -113,6 +111,13 @@ class BlockPlacementLimitTest {
 
         player.simulateBlockBreak(block);
         assertThat(limit.getPlayerLimit(player).getCount(blockType)).isEqualTo(0);
+    }
+
+    private Block getBlock() {
+        World world = server.getWorld("world");
+        assertThat(world).isNotNull();
+
+        return world.getBlockAt(RandomUtils.nextInt(256), RandomUtils.nextInt(128), RandomUtils.nextInt(256));
     }
 
     @AfterEach

@@ -1,5 +1,6 @@
-[![Build Status](https://github.com/mcSilthus/sLimits/workflows/Build/badge.svg)](https://github.com/mcSilthus/spigot-plugin-template/actions?query=workflow%3ABuild)
-[![GitHub release (latest SemVer including pre-releases)](https://img.shields.io/github/v/release/mcSilthus/sLimits?include_prereleases&label=release)](https://github.com/mcSilthus/sLimits)
+[![Build Status](https://github.com/Silthus/sLimits/workflows/Build/badge.svg)](../../actions?query=workflow%3ABuild)
+[![GitHub release (latest SemVer including pre-releases)](https://img.shields.io/github/v/release/Silthus/sLimits?include_prereleases&label=release)](../../releases)
+[![codecov](https://codecov.io/gh/Silthus/sLimits/branch/master/graph/badge.svg)](https://codecov.io/gh/Silthus/sLimits)
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 
@@ -21,12 +22,13 @@ The plugin currently supports the following features. Please [open a feature req
 
 * Limiting block placement based on configs inside `limits/`
 * Destroying previously placed blocks decreases the limit counter
+* Placed blocks are persisted to flat files in the `storage/` directory
 
 ### Current Limitations
 
 This is a **alpha** release and has the following limitations
 
-* Placed blocks are only stored in memory and not persisted thru server restarts
+* There are no commands and GUI yet to show player limits
 
 ## Installation
 

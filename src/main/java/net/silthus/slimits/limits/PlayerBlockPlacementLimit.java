@@ -1,30 +1,56 @@
 package net.silthus.slimits.limits;
 
+import de.exlll.configlib.annotation.Convert;
+import de.exlll.configlib.annotation.ElementType;
+import de.exlll.configlib.annotation.NoConvert;
+import de.exlll.configlib.configs.yaml.BukkitYamlConfiguration;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import net.silthus.slib.config.converter.LocationListConverter;
+import net.silthus.slib.config.converter.MaterialMapConverter;
+import net.silthus.slib.config.converter.UUIDConverter;
+import net.silthus.slimits.LimitsPlugin;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
+import java.nio.file.Path;
 import java.util.*;
 
-@Data
-public class PlayerBlockPlacementLimit {
+@Getter
+@Setter
+@EqualsAndHashCode(of = {"playerUUID", "counts", "locations"}, callSuper = true)
+public class PlayerBlockPlacementLimit extends BukkitYamlConfiguration {
 
-    private UUID playerUUID;
-    private String playerName;
-    private Map<Material, Integer> counts = new HashMap<>();
-    private Set<Location> locations = new HashSet<>();
+    public static PlayerBlockPlacementLimit create(Player player, String identifier) {
 
-    public PlayerBlockPlacementLimit() {
+        PlayerBlockPlacementLimit placementLimit = new PlayerBlockPlacementLimit(player, identifier);
+        placementLimit.loadAndSave();
+        return placementLimit;
     }
 
-    public PlayerBlockPlacementLimit(Player player) {
+    @Convert(UUIDConverter.class)
+    private UUID playerUUID;
+    private String playerName;
+    @Convert(MaterialMapConverter.class)
+    private Map<Material, Integer> counts = new HashMap<>();
+    @Convert(LocationListConverter.class)
+    private List<Location> locations = new ArrayList<>();
+
+    private PlayerBlockPlacementLimit(Player player, String identifier) {
+        super(Path.of(LimitsPlugin.PLUGIN_PATH, "storage", identifier + "_" + player.getUniqueId().toString() + ".yaml"));
         this.playerUUID = player.getUniqueId();
         this.playerName = player.getName();
     }
 
     public int addBlock(Block block) {
+        if (hasPlacedBlock(block)) {
+            return getCount(block.getType());
+        }
+
         int currentCount = getCount(block.getType());
         currentCount++;
 

@@ -119,7 +119,7 @@ public class BlockPlacementLimit implements Listener {
 
         Optional<Integer> limit = getConfig().flatMap(config -> config.getLimit(blockType));
         return limit.isPresent()
-                && playerLimits.getOrDefault(player.getUniqueId(), createLimit(player)).getCount(blockType)
+                && playerLimits.getOrDefault(player.getUniqueId(), PlayerBlockPlacementLimit.create(player, getIdentifier())).getCount(blockType)
                 >= limit.get();
     }
 
@@ -129,13 +129,9 @@ public class BlockPlacementLimit implements Listener {
 
     public PlayerBlockPlacementLimit getPlayerLimit(Player player) {
         if (!getPlayerLimits().containsKey(player.getUniqueId())) {
-            playerLimits.put(player.getUniqueId(), createLimit(player));
+            playerLimits.put(player.getUniqueId(), PlayerBlockPlacementLimit.create(player, getIdentifier()));
         }
         return getPlayerLimits().get(player.getUniqueId());
-    }
-
-    private PlayerBlockPlacementLimit createLimit(Player player) {
-        return new PlayerBlockPlacementLimit(player);
     }
 
     public boolean isApplicable(Player player, Block block) {
