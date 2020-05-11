@@ -1,7 +1,8 @@
 package net.silthus.slimits.limits;
 
-import lombok.Data;
+import lombok.Getter;
 import net.silthus.slimits.Constants;
+import net.silthus.slimits.LimitsManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -12,19 +13,20 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 
-@Data
 public class BlockPlacementLimit implements Listener {
 
-    static final String TYPE_ALIAS = "block-placement";
-
+    @Getter
     private final String identifier;
-    private Map<UUID, PlayerBlockPlacementLimit> playerLimits = new HashMap<>();
+    @Getter
+    private final LimitsManager limitsManager;
     private BlockPlacementLimitConfig config;
+
+    public BlockPlacementLimit(String identifier, LimitsManager limitsManager) {
+        this.identifier = identifier;
+        this.limitsManager = limitsManager;
+    }
 
     public Optional<BlockPlacementLimitConfig> getConfig() {
         return Optional.ofNullable(this.config);
@@ -102,36 +104,29 @@ public class BlockPlacementLimit implements Listener {
 
     public int addPlacedBlock(Player player, Block block) {
 
-        return getPlayerLimit(player).addBlock(block);
+        return getLimitsManager().getPlayerLimit(player).addBlock(block);
     }
 
     public int removePlacedBlock(Player player, Block block) {
 
-        return getPlayerLimit(player).removeBlock(block);
+        return getLimitsManager().getPlayerLimit(player).removeBlock(block);
     }
 
     public int getPlacedBlockAmount(Player player, Material blockType) {
 
-        return getPlayerLimit(player).getCount(blockType);
+        return getLimitsManager().getPlayerLimit(player).getCount(blockType);
     }
 
     public boolean hasReachedLimit(Player player, Material blockType) {
 
         Optional<Integer> limit = getConfig().flatMap(config -> config.getLimit(blockType));
         return limit.isPresent()
-                && playerLimits.getOrDefault(player.getUniqueId(), PlayerBlockPlacementLimit.create(player, getIdentifier())).getCount(blockType)
+                && getLimitsManager().getPlayerLimit(player).getCount(blockType)
                 >= limit.get();
     }
 
     public boolean hasPlacedBlock(Player player, Block block) {
-        return getPlayerLimit(player).hasPlacedBlock(block);
-    }
-
-    public PlayerBlockPlacementLimit getPlayerLimit(Player player) {
-        if (!getPlayerLimits().containsKey(player.getUniqueId())) {
-            playerLimits.put(player.getUniqueId(), PlayerBlockPlacementLimit.create(player, getIdentifier()));
-        }
-        return getPlayerLimits().get(player.getUniqueId());
+        return getLimitsManager().getPlayerLimit(player).hasPlacedBlock(block);
     }
 
     public boolean isApplicable(Player player, Block block) {

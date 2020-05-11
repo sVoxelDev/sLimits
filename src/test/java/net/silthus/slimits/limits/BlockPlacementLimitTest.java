@@ -5,6 +5,7 @@ import be.seeseemelk.mockbukkit.ServerMock;
 import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import com.google.common.collect.Maps;
 import net.silthus.slimits.Constants;
+import net.silthus.slimits.LimitsManager;
 import net.silthus.slimits.LimitsPlugin;
 import org.apache.commons.lang.math.RandomUtils;
 import org.bukkit.Material;
@@ -24,6 +25,7 @@ class BlockPlacementLimitTest {
 
     private static ServerMock server;
     private static LimitsPlugin plugin;
+    private static LimitsManager limitsManager;
     private BlockPlacementLimit limit;
     private PlayerMock player;
 
@@ -31,6 +33,7 @@ class BlockPlacementLimitTest {
     public static void setUp() {
         server = MockBukkit.mock();
         plugin = MockBukkit.loadWith(LimitsPlugin.class, new File("src/test/resources/plugin.yml"));
+        limitsManager = new LimitsManager(plugin);
     }
 
     @AfterAll
@@ -40,11 +43,11 @@ class BlockPlacementLimitTest {
 
     @BeforeEach
     public void beforeEach() {
-        Path configPath = Path.of("src/test/resources", "test-limit1.yaml");
+        Path configPath = new File("src/test/resources", "test-limit1.yaml").toPath();
         BlockPlacementLimitConfig config = new BlockPlacementLimitConfig(configPath);
         config.load();
 
-        limit = new BlockPlacementLimit("test");
+        limit = new BlockPlacementLimit("test", limitsManager);
         limit.load(config);
         plugin.registerEvents(limit);
 
@@ -59,7 +62,7 @@ class BlockPlacementLimitTest {
         Block block = getBlock();
 
         limit.addPlacedBlock(player, block);
-        PlayerBlockPlacementLimit playerLimit = limit.getPlayerLimits().get(player.getUniqueId());
+        PlayerBlockPlacementLimit playerLimit = limitsManager.getPlayerLimit(player);
         assertThat(playerLimit).isNotNull();
 
         assertThat(playerLimit.getCount(block.getType())).isEqualTo(1);
@@ -79,7 +82,7 @@ class BlockPlacementLimitTest {
         World world = server.getWorld("world");
         assertThat(world).isNotNull();
 
-        PlayerBlockPlacementLimit playerLimit = limit.getPlayerLimit(player);
+        PlayerBlockPlacementLimit playerLimit = limitsManager.getPlayerLimit(player);
         for (int i = 0; i < 5; i++) {
             playerLimit.addBlock(world.getBlockAt(i, i, i));
         }
@@ -107,10 +110,10 @@ class BlockPlacementLimitTest {
 
         limit.addPlacedBlock(player, block);
         Material blockType = block.getType();
-        assertThat(limit.getPlayerLimit(player).getCount(blockType)).isEqualTo(1);
+        assertThat(limitsManager.getPlayerLimit(player).getCount(blockType)).isEqualTo(1);
 
         player.simulateBlockBreak(block);
-        assertThat(limit.getPlayerLimit(player).getCount(blockType)).isEqualTo(0);
+        assertThat(limitsManager.getPlayerLimit(player).getCount(blockType)).isEqualTo(0);
     }
 
     private Block getBlock() {

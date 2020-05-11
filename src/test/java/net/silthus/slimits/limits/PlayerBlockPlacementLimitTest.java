@@ -41,7 +41,7 @@ public class PlayerBlockPlacementLimitTest {
     @SneakyThrows
     @BeforeEach
     public void beforeEach() {
-        File storage = Path.of(LimitsPlugin.PLUGIN_PATH, "storage").toFile();
+        File storage = new File(LimitsPlugin.PLUGIN_PATH, "storage");
         FileUtils.deleteDirectory(storage);
 
         player = server.addPlayer();
@@ -50,11 +50,11 @@ public class PlayerBlockPlacementLimitTest {
     @Test
     @DisplayName("should create storage file with uuid and identifier")
     public void shouldCreateStorageFile() {
-        Path storage = Path.of(LimitsPlugin.PLUGIN_PATH, "storage", "test" + "_" + player.getUniqueId().toString() + ".yaml");
+        Path storage = new File(new File(LimitsPlugin.PLUGIN_PATH, "storage"), player.getUniqueId().toString() + ".yaml").toPath();
 
         assertThat(storage.toFile()).doesNotExist();
 
-        PlayerBlockPlacementLimit.create(player, "test");
+        PlayerBlockPlacementLimit.create(player);
 
         assertThat(storage.toFile())
                 .exists()
@@ -67,7 +67,7 @@ public class PlayerBlockPlacementLimitTest {
     @DisplayName("should set player uuid and name in config")
     public void shouldSetPlayerData() {
 
-        PlayerBlockPlacementLimit limit = PlayerBlockPlacementLimit.create(player, "test");
+        PlayerBlockPlacementLimit limit = PlayerBlockPlacementLimit.create(player);
 
         assertThat(limit.getPlayerUUID())
                 .isEqualTo(player.getUniqueId());
@@ -79,7 +79,7 @@ public class PlayerBlockPlacementLimitTest {
     @DisplayName("addBlock() should increase block type count")
     public void shouldIncreaseBlockTypeCount() {
 
-        PlayerBlockPlacementLimit limit = PlayerBlockPlacementLimit.create(player, "test");
+        PlayerBlockPlacementLimit limit = PlayerBlockPlacementLimit.create(player);
 
         assertThat(limit.getCounts()).isEmpty();
 
@@ -95,7 +95,7 @@ public class PlayerBlockPlacementLimitTest {
     @DisplayName("addBlock() should add block to location list")
     public void shouldAddBlockLocation() {
 
-        PlayerBlockPlacementLimit limit = PlayerBlockPlacementLimit.create(player, "test");
+        PlayerBlockPlacementLimit limit = PlayerBlockPlacementLimit.create(player);
 
         assertThat(limit.getLocations()).isEmpty();
 
@@ -112,7 +112,7 @@ public class PlayerBlockPlacementLimitTest {
     @DisplayName("getCount() should get correct count")
     public void shouldGetCorrectCountForType() {
 
-        PlayerBlockPlacementLimit limit = PlayerBlockPlacementLimit.create(player, "test");
+        PlayerBlockPlacementLimit limit = PlayerBlockPlacementLimit.create(player);
 
         Block block = getBlock();
         assertThat(limit.getCount(block.getType()))
@@ -128,7 +128,7 @@ public class PlayerBlockPlacementLimitTest {
     @DisplayName("addBlock() should not count already placed blocks")
     public void shouldNotAddDuplicateBlocks() {
 
-        PlayerBlockPlacementLimit limit = PlayerBlockPlacementLimit.create(player, "test");
+        PlayerBlockPlacementLimit limit = PlayerBlockPlacementLimit.create(player);
 
         Block block = getBlock();
         assertThat(limit.getCount(block.getType()))
@@ -147,7 +147,7 @@ public class PlayerBlockPlacementLimitTest {
     @DisplayName("hasPlacedBlock() should check placed blocks")
     public void testHasPlacedBlock() {
 
-        PlayerBlockPlacementLimit limit = PlayerBlockPlacementLimit.create(player, "test");
+        PlayerBlockPlacementLimit limit = PlayerBlockPlacementLimit.create(player);
 
         Block block = getBlock();
 
@@ -167,7 +167,7 @@ public class PlayerBlockPlacementLimitTest {
     @DisplayName("removeBlock() should decrease counter")
     public void shouldRemoveBlockFromCount() {
 
-        PlayerBlockPlacementLimit limit = PlayerBlockPlacementLimit.create(player, "test");
+        PlayerBlockPlacementLimit limit = PlayerBlockPlacementLimit.create(player);
         assertThat(limit.getCounts())
                 .isEmpty();
 
@@ -192,7 +192,7 @@ public class PlayerBlockPlacementLimitTest {
     @DisplayName("removeBlock() should remove block from locations")
     public void shouldRemoveBlockFromLocations() {
 
-        PlayerBlockPlacementLimit limit = PlayerBlockPlacementLimit.create(player, "test");
+        PlayerBlockPlacementLimit limit = PlayerBlockPlacementLimit.create(player);
         assertThat(limit.getLocations())
                 .isEmpty();
 

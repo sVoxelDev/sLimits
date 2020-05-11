@@ -1,8 +1,10 @@
 package net.silthus.slimits;
 
+import co.aikar.commands.PaperCommandManager;
 import kr.entree.spigradle.Plugin;
 import lombok.Getter;
 import net.silthus.slib.bukkit.BasePlugin;
+import net.silthus.slimits.commands.LimitsCommand;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPluginLoader;
@@ -17,6 +19,7 @@ public class LimitsPlugin extends BasePlugin implements Listener {
 
     @Getter
     private LimitsManager limitsManager;
+    private PaperCommandManager commandManager;
 
     public LimitsPlugin() {
     }
@@ -32,6 +35,9 @@ public class LimitsPlugin extends BasePlugin implements Listener {
         PLUGIN_PATH = getDataFolder().getAbsolutePath();
 
         this.limitsManager = new LimitsManager(this);
+        this.commandManager = new PaperCommandManager(this);
+
+        this.commandManager.registerCommand(new LimitsCommand(getLimitsManager()));
 
         load();
     }
