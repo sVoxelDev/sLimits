@@ -34,7 +34,7 @@ public class BlockPlacementLimitConfigTests {
 
     @BeforeEach
     public void beforeEach() {
-        Path configPath = Path.of("src/test/resources", "test-limit1.yaml");
+        Path configPath = new File("src/test/resources", "test-limit1.yaml").toPath();
         config = new BlockPlacementLimitConfig(configPath);
         config.load();
     }
@@ -69,7 +69,7 @@ public class BlockPlacementLimitConfigTests {
     @DisplayName("should load empty config with defaults")
     public void shouldSetConfigDefaults() {
 
-        Path path = Path.of("src/test/resources", "test-limit2.yaml");
+        Path path = new File("src/test/resources", "test-limit2.yaml").toPath();
         BlockPlacementLimitConfig config = new BlockPlacementLimitConfig(path);
         config.load();
 
