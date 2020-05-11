@@ -1,6 +1,7 @@
 package net.silthus.slimits.api;
 
 import net.silthus.slimits.limits.PlayerBlockPlacementLimit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 /**
@@ -28,5 +29,5 @@ public interface LimitsStorage {
      * @param player to load the limits for
      * @return limits of a single player
      */
-    PlayerBlockPlacementLimit load(Player player);
+    PlayerBlockPlacementLimit load(OfflinePlayer player);
 }

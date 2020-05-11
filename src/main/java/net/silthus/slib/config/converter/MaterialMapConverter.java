@@ -19,6 +19,6 @@ public final class MaterialMapConverter
     @Override
     public Map<Material, Double> convertFrom(Map<String, Double> element, ConversionInfo info) {
         return element.entrySet().stream()
-                .collect(toMap(o -> Material.getMaterial(o.getKey()), Map.Entry::getValue));
+                .collect(toMap(o -> Material.matchMaterial(o.getKey()), Map.Entry::getValue));
     }
 }

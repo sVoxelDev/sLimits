@@ -42,19 +42,19 @@ public class BlockPlacementLimit implements Listener {
 
         if (!isApplicable(event.getPlayer(), event.getBlock())) return;
 
-        getConfig().ifPresent(config -> {
-            Material blockType = event.getBlock().getType();
-            if (hasReachedLimit(event.getPlayer(), blockType)) {
-                event.getPlayer().sendMessage(
-                        ChatColor.DARK_RED
-                                + "You reached your limit of "
-                                + config.getLimit(blockType).orElse(0)
-                                + " for placing "
-                                + blockType.name());
-                event.setCancelled(true);
-                return;
-            }
-        });
+        PlayerBlockPlacementLimit playerLimit = getPlayerLimit(event.getPlayer());
+
+        Material blockType = event.getBlock().getType();
+        if (hasReachedLimit(event.getPlayer(), blockType)) {
+            event.getPlayer().sendMessage(
+                    ChatColor.DARK_RED
+                            + "You reached your limit of "
+                            + playerLimit.getLimit(blockType).orElse(0)
+                            + " for placing "
+                            + blockType.name());
+            event.setCancelled(true);
+            return;
+        }
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
@@ -62,23 +62,22 @@ public class BlockPlacementLimit implements Listener {
 
         if (!isApplicable(event.getPlayer(), event.getBlock())) return;
 
-        getConfig().flatMap(config -> config.getLimit(event.getBlock().getType()))
-                .ifPresent(limit -> {
-                    Block block = event.getBlock();
+        getPlayerLimit(event.getPlayer()).getLimit(event.getBlock().getType()).ifPresent(limit -> {
+            Block block = event.getBlock();
 
-                    Player player = event.getPlayer();
-                    Material blockType = block.getType();
+            Player player = event.getPlayer();
+            Material blockType = block.getType();
 
-                    int placedBlockAmount = addPlacedBlock(player, event.getBlock());
+            int placedBlockAmount = addPlacedBlock(player, event.getBlock());
 
-                    player.sendMessage(ChatColor.AQUA
-                            + "You placed "
-                            + placedBlockAmount
-                            + "/"
-                            + limit
-                            + " of "
-                            + blockType.name());
-                });
+            player.sendMessage(ChatColor.AQUA
+                    + "You placed "
+                    + placedBlockAmount
+                    + "/"
+                    + limit
+                    + " of "
+                    + blockType.name());
+        });
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
@@ -88,45 +87,46 @@ public class BlockPlacementLimit implements Listener {
 
         if (!hasPlacedBlock(event.getPlayer(), event.getBlock())) return;
 
-        getConfig().flatMap(config -> config.getLimit(event.getBlock().getType()))
-                .ifPresent(limit -> {
-                    int newCount = removePlacedBlock(event.getPlayer(), event.getBlock());
+        getPlayerLimit(event.getPlayer()).getLimit(event.getBlock().getType()).ifPresent(limit -> {
+            int newCount = removePlacedBlock(event.getPlayer(), event.getBlock());
 
-                    event.getPlayer().sendMessage(ChatColor.AQUA
-                            + "You removed a placed block. You placed "
-                            + newCount
-                            + "/"
-                            + limit
-                            + " of "
-                            + event.getBlock().getType().name());
-                });
+            event.getPlayer().sendMessage(ChatColor.AQUA
+                    + "You removed a placed block. You placed "
+                    + newCount
+                    + "/"
+                    + limit
+                    + " of "
+                    + event.getBlock().getType().name());
+        });
     }
 
     public int addPlacedBlock(Player player, Block block) {
 
-        return getLimitsManager().getPlayerLimit(player).addBlock(block);
+        return getPlayerLimit(player).addBlock(block);
     }
 
     public int removePlacedBlock(Player player, Block block) {
 
-        return getLimitsManager().getPlayerLimit(player).removeBlock(block);
+        return getPlayerLimit(player).removeBlock(block);
     }
 
     public int getPlacedBlockAmount(Player player, Material blockType) {
 
-        return getLimitsManager().getPlayerLimit(player).getCount(blockType);
+        return getPlayerLimit(player).getCount(blockType);
     }
 
     public boolean hasReachedLimit(Player player, Material blockType) {
 
-        Optional<Integer> limit = getConfig().flatMap(config -> config.getLimit(blockType));
+        PlayerBlockPlacementLimit playerLimit = getPlayerLimit(player);
+        Optional<Integer> limit = playerLimit.getLimit(blockType);
+
         return limit.isPresent()
-                && getLimitsManager().getPlayerLimit(player).getCount(blockType)
+                && playerLimit.getCount(blockType)
                 >= limit.get();
     }
 
     public boolean hasPlacedBlock(Player player, Block block) {
-        return getLimitsManager().getPlayerLimit(player).hasPlacedBlock(block);
+        return getPlayerLimit(player).hasPlacedBlock(block);
     }
 
     public boolean isApplicable(Player player, Block block) {
@@ -137,6 +137,16 @@ public class BlockPlacementLimit implements Listener {
         return isLimitedBlock
                 && hasPermission
                 && !isExcluded;
+    }
+
+    private PlayerBlockPlacementLimit getPlayerLimit(Player player) {
+        PlayerBlockPlacementLimit playerLimit = getLimitsManager().getPlayerLimit(player);
+        registerLimit(playerLimit);
+        return playerLimit;
+    }
+
+    private void registerLimit(PlayerBlockPlacementLimit playerLimit) {
+        getConfig().ifPresent(config -> playerLimit.registerLimitConfig(getIdentifier(), config));
     }
 
     private String getPermission() {

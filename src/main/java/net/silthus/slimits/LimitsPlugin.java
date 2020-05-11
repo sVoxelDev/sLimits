@@ -5,7 +5,9 @@ import kr.entree.spigradle.Plugin;
 import lombok.Getter;
 import net.silthus.slib.bukkit.BasePlugin;
 import net.silthus.slimits.commands.LimitsCommand;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPluginLoader;
 

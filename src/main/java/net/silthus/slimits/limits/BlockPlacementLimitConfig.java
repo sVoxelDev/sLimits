@@ -1,6 +1,6 @@
 package net.silthus.slimits.limits;
 
-import de.exlll.configlib.annotation.ConfigurationElement;
+import de.exlll.configlib.annotation.Comment;
 import de.exlll.configlib.annotation.Convert;
 import de.exlll.configlib.configs.yaml.BukkitYamlConfiguration;
 import lombok.Getter;
@@ -12,15 +12,25 @@ import org.bukkit.Material;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 @Getter
 @Setter
-@ConfigurationElement
 public class BlockPlacementLimitConfig extends BukkitYamlConfiguration {
 
-    private LimitMode mode = LimitMode.WHITELIST;
+    @Comment({
+            "Here you can configure how this limit config plays with other limits.",
+            "Defaults to: ADD",
+            "ADD: In this mode duplicate block types from different configs will be added to each other and build a sum.",
+            "SUBTRACT: In this mode you block limits will be subtracted from other ADD mode configs with the same block types.",
+            "ABSOLUTE: Only one absolute config per block type and player is applied. This type of config applies the absolute values and irgnores all other config types."
+    })
+    private LimitMode mode = LimitMode.ADD;
 
+    @Comment({
+            "Define you block type limits in the form of a map.",
+            "wood:5",
+            "bedrock:100"
+    })
     @Convert(MaterialMapConverter.class)
     private Map<Material, Integer> blocks = new HashMap<>();
 
@@ -30,10 +40,6 @@ public class BlockPlacementLimitConfig extends BukkitYamlConfiguration {
 
     public BlockPlacementLimitConfig(Path path) {
         super(path);
-    }
-
-    public Optional<Integer> getLimit(Material blockType) {
-        return Optional.ofNullable(getBlocks().get(blockType));
     }
 
     public boolean hasLimit(Material blockType) {

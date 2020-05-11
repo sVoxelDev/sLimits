@@ -1,39 +1,71 @@
 package net.silthus.slimits.storage;
 
+import de.exlll.configlib.annotation.ElementType;
 import de.exlll.configlib.configs.yaml.BukkitYamlConfiguration;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import net.silthus.slimits.LimitsConfig;
+import net.silthus.slimits.LimitsManager;
 import net.silthus.slimits.api.LimitsStorage;
 import net.silthus.slimits.limits.PlayerBlockPlacementLimit;
-import org.bukkit.entity.Player;
+import org.bukkit.OfflinePlayer;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.UUID;
 
 @Data
 public class FlatFileLimitsStorage implements LimitsStorage {
 
-    private final LimitsConfig config;
+    private final LimitsManager limitsManager;
 
     @Override
     public void store(PlayerBlockPlacementLimit... limits) {
 
         for (PlayerBlockPlacementLimit limit : limits) {
-            StorageConfig config = new StorageConfig(new File(getConfig().getStoragePath(), limit.getPlayerUUID().toString() + ".yaml").toPath(), limit);
+            StorageConfig config = new StorageConfig(getStorageFile(limit.getPlayerUUID()).toPath(), limit);
+            config.setBlockPlacementLimit(limit);
             config.save();
         }
     }
 
     @Override
     public PlayerBlockPlacementLimit[] load() {
-        return new PlayerBlockPlacementLimit[0];
+
+        File storagePath = getLimitsManager().getStoragePath();
+
+        if (storagePath.mkdirs()) return new PlayerBlockPlacementLimit[0];
+
+        File[] files = storagePath.listFiles();
+        PlayerBlockPlacementLimit[] result = new PlayerBlockPlacementLimit[files.length];
+
+        for (int i = 0; i < files.length; i++) {
+            PlayerBlockPlacementLimit playerLimit = loadPlayerConfig(files[0]);
+            result[i] = playerLimit;
+        }
+
+        return result;
     }
 
     @Override
-    public PlayerBlockPlacementLimit load(Player player) {
-        return null;
+    public PlayerBlockPlacementLimit load(OfflinePlayer player) {
+
+        File file = new File(getLimitsManager().getStoragePath(), player.getUniqueId().toString() + ".yaml");
+        if (!file.exists()) {
+            return getLimitsManager().getPlayerLimit(player);
+        } else {
+            return loadPlayerConfig(file);
+        }
+    }
+
+    private File getStorageFile(UUID player) {
+        return new File(getLimitsManager().getStoragePath(), player.toString() + ".yaml");
+    }
+
+    private PlayerBlockPlacementLimit loadPlayerConfig(File file) {
+        StorageConfig storageConfig = new StorageConfig(file.toPath());
+        storageConfig.load();
+        return storageConfig.getBlockPlacementLimit();
     }
 
     @Getter
@@ -45,6 +77,10 @@ public class FlatFileLimitsStorage implements LimitsStorage {
         protected StorageConfig(Path path, PlayerBlockPlacementLimit limit) {
             super(path);
             this.blockPlacementLimit = limit;
+        }
+
+        protected StorageConfig(Path path) {
+            super(path);
         }
     }
 }
