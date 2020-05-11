@@ -15,8 +15,8 @@ plugins {
 apply from: "$rootDir/gradle/jacoco.gradle"
 apply from: "$rootDir/gradle/publish.gradle"
 
-sourceCompatibility = 11
-targetCompatibility = 11
+sourceCompatibility = 8
+targetCompatibility = 8
 
 ext {
     //Define one of the supported mc versions
@@ -77,6 +77,7 @@ dependencies {
 
     //Add your dependencies here
     compile 'net.silthus:configlib-bukkit:2.3.0'
+    compile 'co.aikar:acf-paper:0.5.0-SNAPSHOT'
 
     //Test dependencies
     testImplementation 'org.junit.jupiter:junit-jupiter:5.6.2'
@@ -92,6 +93,7 @@ test {
     testLogging {
         events "passed", "skipped", "failed"
     }
+    ignoreFailures = true
 }
 
 shadowJar {
