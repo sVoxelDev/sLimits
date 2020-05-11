@@ -18,7 +18,9 @@ public class LimitsManager {
 
     @Getter
     private final LimitsPlugin plugin;
+    @Getter
     private final Map<String, BlockPlacementLimit> loadedLimits = new HashMap<>();
+    @Getter
     private final Map<UUID, PlayerBlockPlacementLimit> playerLimits = new HashMap<>();
     @Getter
     private final Map<String, BlockPlacementLimitConfig> loadedConfigs = new HashMap<>();
@@ -43,7 +45,7 @@ public class LimitsManager {
 
     public void unload() {
 
-        getLoadedLimits().values().forEach(blockPlacementLimit -> blockPlacementLimit.getPlayerLimits().values().forEach(Configuration::save));
+        getPlayerLimits().values().forEach(Configuration::save);
     }
 
     public void loadLimit(String id, File file, BlockPlacementLimitConfig config) {

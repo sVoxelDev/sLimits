@@ -1,10 +1,7 @@
 package net.silthus.slimits.limits;
 
 import de.exlll.configlib.annotation.Convert;
-import de.exlll.configlib.annotation.ElementType;
-import de.exlll.configlib.annotation.NoConvert;
 import de.exlll.configlib.configs.yaml.BukkitYamlConfiguration;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,7 +14,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
-import java.nio.file.Path;
+import java.io.File;
 import java.util.*;
 
 @Getter
@@ -25,9 +22,9 @@ import java.util.*;
 @EqualsAndHashCode(of = {"playerUUID", "counts", "locations"}, callSuper = true)
 public class PlayerBlockPlacementLimit extends BukkitYamlConfiguration {
 
-    public static PlayerBlockPlacementLimit create(Player player, String identifier) {
+    public static PlayerBlockPlacementLimit create(Player player) {
 
-        PlayerBlockPlacementLimit placementLimit = new PlayerBlockPlacementLimit(player, identifier);
+        PlayerBlockPlacementLimit placementLimit = new PlayerBlockPlacementLimit(player);
         placementLimit.loadAndSave();
         return placementLimit;
     }
@@ -40,8 +37,8 @@ public class PlayerBlockPlacementLimit extends BukkitYamlConfiguration {
     @Convert(LocationListConverter.class)
     private List<Location> locations = new ArrayList<>();
 
-    private PlayerBlockPlacementLimit(Player player, String identifier) {
-        super(Path.of(LimitsPlugin.PLUGIN_PATH, "storage", identifier + "_" + player.getUniqueId().toString() + ".yaml"));
+    private PlayerBlockPlacementLimit(Player player) {
+        super(new File(new File(LimitsPlugin.PLUGIN_PATH, "storage"), player.getUniqueId().toString() + ".yaml").toPath());
         this.playerUUID = player.getUniqueId();
         this.playerName = player.getName();
     }
