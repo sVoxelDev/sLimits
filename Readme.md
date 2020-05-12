@@ -47,6 +47,17 @@ blocks:
     BEDROCK: 5
 ```
 
+## Commands
+
+You can use the following commands to manage your limits.
+
+### Player Commands
+
+| Command | Description | Permission |
+| :-----: | ----------- | ------- |
+| `/limits [player]` | Shows the limits of the current or another player. | * `slimits.cmd.limits`: Can show own limits.<br>* `slimits.cmd.limits.all`: Can lookup the limits of all players. |
+
+
 ## Permissions
 
 For each limit config, permissions are automatically generated and only players with the given permission of the config are assigned that limit.
