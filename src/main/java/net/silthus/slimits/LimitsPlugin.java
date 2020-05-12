@@ -49,6 +49,11 @@ public class LimitsPlugin extends BasePlugin implements Listener {
     }
 
     @Override
+    public void reload() {
+        getLimitsManager().reload();
+    }
+
+    @Override
     public void disable() {
         getLimitsManager().unload();
     }

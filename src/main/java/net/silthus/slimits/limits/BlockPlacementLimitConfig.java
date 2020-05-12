@@ -1,21 +1,35 @@
 package net.silthus.slimits.limits;
 
+import com.google.common.base.Strings;
 import de.exlll.configlib.annotation.Comment;
 import de.exlll.configlib.annotation.Convert;
+import de.exlll.configlib.annotation.NoConvert;
 import de.exlll.configlib.configs.yaml.BukkitYamlConfiguration;
 import lombok.Getter;
 import lombok.Setter;
 import net.silthus.slib.config.converter.MaterialMapConverter;
+import net.silthus.slimits.Constants;
 import net.silthus.slimits.LimitMode;
 import org.bukkit.Material;
 
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @Getter
 @Setter
 public class BlockPlacementLimitConfig extends BukkitYamlConfiguration {
+
+    @NoConvert
+    private String identifier = "";
+
+    @Comment({
+            "By default the permission is constructed from the path to the config.",
+            "You can override this by setting your custom permission here.",
+            "Set it to an empty string to use the default permission."
+    })
+    private String permission = "";
 
     @Comment({
             "Here you can configure how this limit config plays with other limits.",
@@ -42,7 +56,9 @@ public class BlockPlacementLimitConfig extends BukkitYamlConfiguration {
         super(path);
     }
 
-    public boolean hasLimit(Material blockType) {
-        return getBlocks().containsKey(blockType);
+    public String getPermission() {
+        if (!Strings.isNullOrEmpty(permission)) return permission;
+
+        return Constants.PERMISSION_PREFIX + "." + getIdentifier();
     }
 }

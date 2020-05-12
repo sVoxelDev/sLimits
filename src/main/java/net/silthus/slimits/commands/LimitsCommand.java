@@ -2,6 +2,7 @@ package net.silthus.slimits.commands;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
+import co.aikar.locales.MessageKey;
 import lombok.Getter;
 import net.silthus.slimits.LimitsManager;
 import net.silthus.slimits.limits.PlayerBlockPlacementLimit;
@@ -37,11 +38,20 @@ public class LimitsCommand extends BaseCommand {
             StringBuilder sb = new StringBuilder();
             messages.add(sb.append(ChatColor.BOLD).append(ChatColor.GREEN).append(material.name()).append(": ")
                     .append(ChatColor.RESET).append(ChatColor.AQUA)
-                    .append(playerLimit.getLimit(material).orElse(0)).append(ChatColor.GREEN).append("/").append(ChatColor.AQUA).append(limit)
+                    .append(playerLimit.getCount(material)).append(ChatColor.GREEN).append("/").append(ChatColor.AQUA).append(limit)
                     .append(ChatColor.YELLOW).append(" blocks placed.")
                     .toString());
         });
 
         player.sendMessage(messages.toArray(new String[0]));
+    }
+
+    @Subcommand("reload")
+    @Description("Reloads the plugin fetching updated configs from the disk.")
+    @CommandPermission("slimits.admin.reload")
+    public void reload() {
+
+        getLimitsManager().reload();
+        getCurrentCommandIssuer().sendMessage(ChatColor.YELLOW + "Reloaded all limit configs.");
     }
 }

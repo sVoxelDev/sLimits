@@ -7,6 +7,7 @@ import net.silthus.slimits.limits.BlockPlacementLimit;
 import net.silthus.slimits.limits.BlockPlacementLimitConfig;
 import net.silthus.slimits.limits.PlayerBlockPlacementLimit;
 import net.silthus.slimits.storage.FlatFileLimitsStorage;
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -22,16 +23,23 @@ import java.util.UUID;
 public class LimitsManager implements Listener {
 
     private final LimitsPlugin plugin;
-    private final Map<String, BlockPlacementLimit> loadedLimitListeners = new HashMap<>();
     private final Map<UUID, PlayerBlockPlacementLimit> playerLimits = new HashMap<>();
     private final Map<String, BlockPlacementLimitConfig> limitConfigs = new HashMap<>();
 
-    private LimitsConfig pluginConfig;
+    private final BlockPlacementLimit blockPlacementLimit;
+    private final LimitsConfig pluginConfig;
+
     private LimitsStorage storage;
 
     public LimitsManager(LimitsPlugin plugin) {
         this.plugin = plugin;
         this.pluginConfig = new LimitsConfig(new File(plugin.getDataFolder(), "config.yaml").toPath());
+        this.blockPlacementLimit = new BlockPlacementLimit(this);
+    }
+
+    public void reload() {
+        unload();
+        load();
     }
 
     public void load() {
@@ -42,12 +50,13 @@ public class LimitsManager implements Listener {
 
         ConfigUtil.loadRecursiveConfigs(
                 plugin, "limits", BlockPlacementLimitConfig.class, this::loadLimit);
-        getPlugin().getLogger().info("Loaded " + loadedLimitListeners.size() + " limit configs.");
+        getPlugin().getLogger().info("Loaded " + limitConfigs.size() + " limit configs.");
 
         getPlugin().registerEvents(this);
+        getPlugin().registerEvents(getBlockPlacementLimit());
     }
 
-    private void initializeStorage() {
+    public void initializeStorage() {
 
         switch (getPluginConfig().getStorage()) {
             case FLATFILES:
@@ -61,35 +70,22 @@ public class LimitsManager implements Listener {
     public void unload() {
 
         getPlugin().unregisterEvents(this);
+        getPlugin().unregisterEvents(getBlockPlacementLimit());
 
         getStorage().store(getPlayerLimits().values().toArray(new PlayerBlockPlacementLimit[0]));
         getPlayerLimits().clear();
 
-        getLoadedLimitListeners().values().forEach(limit -> getPlugin().unregisterEvents(limit));
-        getLoadedLimitListeners().clear();
-
         getLimitConfigs().clear();
     }
 
-    @EventHandler(ignoreCancelled = true)
-    public void onPlayerQuit(PlayerQuitEvent event) {
-        Player player = event.getPlayer();
-        savePlayerLimits(player);
-        playerLimits.remove(player.getUniqueId());
-    }
-
     public void loadLimit(String id, File file, BlockPlacementLimitConfig config) {
-        if (loadedLimitListeners.containsKey(id)) {
+        if (limitConfigs.containsKey(id)) {
             getPlugin().getLogger().warning("Duplicate config detected: " + id);
             return;
         }
+
+        config.setIdentifier(id);
         limitConfigs.put(id, config);
-
-        BlockPlacementLimit limit = new BlockPlacementLimit(id, this);
-        loadedLimitListeners.put(id, limit);
-
-        getPlugin().registerEvents(limit);
-        limit.load(config);
 
         plugin.getLogger().info("Loaded limit config: " + id + " (" + file.getAbsolutePath() + ")");
     }
@@ -97,7 +93,7 @@ public class LimitsManager implements Listener {
     public PlayerBlockPlacementLimit getPlayerLimit(OfflinePlayer player) {
 
         if (!playerLimits.containsKey(player.getUniqueId())) {
-            playerLimits.put(player.getUniqueId(), getStorage().load(player));
+            playerLimits.put(player.getUniqueId(), loadPlayerLimit(player));
         }
 
         return playerLimits.get(player.getUniqueId());
@@ -110,5 +106,30 @@ public class LimitsManager implements Listener {
 
     public void savePlayerLimits(Player player) {
         getStorage().store(getPlayerLimit(player));
+    }
+
+    private PlayerBlockPlacementLimit loadPlayerLimit(OfflinePlayer player) {
+
+        PlayerBlockPlacementLimit playerLimit = getStorage().load(player);
+        Player onlinePlayer = Bukkit.getPlayer(player.getUniqueId());
+
+        if (onlinePlayer != null && onlinePlayer.isOnline()) {
+            getLimitConfigs().values().stream()
+                    .filter(config -> onlinePlayer.hasPermission(config.getPermission()))
+                    .forEach(playerLimit::registerLimitConfig);
+        }
+
+        return playerLimit;
+    }
+
+    ///
+    /// Events
+    ///
+
+    @EventHandler(ignoreCancelled = true)
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        Player player = event.getPlayer();
+        savePlayerLimits(player);
+        playerLimits.remove(player.getUniqueId());
     }
 }

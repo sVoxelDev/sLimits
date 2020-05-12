@@ -6,13 +6,16 @@ import lombok.Getter;
 import lombok.Setter;
 import net.silthus.slib.config.converter.LocationListConverter;
 import net.silthus.slib.config.converter.MaterialMapConverter;
+import net.silthus.slib.config.converter.MaterialMapStringSetConverter;
 import net.silthus.slib.config.converter.UUIDConverter;
+import net.silthus.slimits.Constants;
 import net.silthus.slimits.LimitMode;
 import net.silthus.slimits.config.LimitModeMapConverter;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 
 import java.util.*;
 
@@ -32,6 +35,8 @@ public class PlayerBlockPlacementLimit {
     private Map<Material, Integer> counts = new HashMap<>();
     @Convert(LocationListConverter.class)
     private List<Location> locations = new ArrayList<>();
+    @Convert(MaterialMapStringSetConverter.class)
+    private Map<Material, Set<String>> blockTypePermissions = new HashMap<>();
 
     public PlayerBlockPlacementLimit(OfflinePlayer player) {
         this.playerUUID = player.getUniqueId();
@@ -41,8 +46,8 @@ public class PlayerBlockPlacementLimit {
     public PlayerBlockPlacementLimit() {
     }
 
-    public void registerLimitConfig(String identifier, BlockPlacementLimitConfig config) {
-        if (limitConfigs.containsKey(identifier)) {
+    public void registerLimitConfig(BlockPlacementLimitConfig config) {
+        if (limitConfigs.containsKey(config.getIdentifier())) {
             return;
         }
 
@@ -70,11 +75,12 @@ public class PlayerBlockPlacementLimit {
                 break;
         }
 
-        limitConfigs.put(identifier, config.getMode());
+        limitConfigs.put(config.getIdentifier(), config.getMode());
+        addPermissions(config);
     }
 
-    public void unregisterLimitConfig(String identifier, BlockPlacementLimitConfig config) {
-        LimitMode limitMode = limitConfigs.remove(identifier);
+    public void unregisterLimitConfig(BlockPlacementLimitConfig config) {
+        LimitMode limitMode = limitConfigs.remove(config.getIdentifier());
         if (limitMode == null) return;
 
         // invert the limit change
@@ -95,6 +101,8 @@ public class PlayerBlockPlacementLimit {
                 });
                 break;
         }
+
+        removePermissions(config);
     }
 
     public Optional<Integer> getLimit(Material blockType) {
@@ -143,5 +151,41 @@ public class PlayerBlockPlacementLimit {
         }
 
         return count;
+    }
+
+    public boolean isApplicable(Player player, Block block) {
+
+        boolean isLimitedBlock = getLimits().containsKey(block.getType());
+        boolean hasPermission = getBlockTypePermissions()
+                .getOrDefault(block.getType(), new HashSet<>()).stream()
+                .anyMatch(player::hasPermission);
+        boolean isExcluded = player.hasPermission(Constants.PERMISSION_EXCLUDE_FROM_LIMITS);
+
+        return (isLimitedBlock && hasPermission) && !isExcluded;
+    }
+
+    public boolean hasReachedLimit(Material blockType) {
+
+        Optional<Integer> limit = getLimit(blockType);
+
+        return limit.filter(integer -> getCount(blockType) >= integer).isPresent();
+    }
+
+    private void addPermissions(BlockPlacementLimitConfig config) {
+        for (Material material : config.getBlocks().keySet()) {
+            if (!blockTypePermissions.containsKey(material)) {
+                blockTypePermissions.put(material, new HashSet<>());
+            }
+            blockTypePermissions.get(material).add(config.getPermission());
+        }
+    }
+
+    private void removePermissions(BlockPlacementLimitConfig config) {
+        for (Material material : config.getBlocks().keySet()) {
+            if (!blockTypePermissions.containsKey(material)) {
+                blockTypePermissions.put(material, new HashSet<>());
+            }
+            blockTypePermissions.get(material).remove(config.getPermission());
+        }
     }
 }

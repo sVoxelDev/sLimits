@@ -34,6 +34,7 @@ class BlockPlacementLimitTest {
         server = MockBukkit.mock();
         plugin = MockBukkit.loadWith(LimitsPlugin.class, new File("src/test/resources/plugin.yml"));
         limitsManager = new LimitsManager(plugin);
+        limitsManager.initializeStorage();
     }
 
     @AfterAll
@@ -47,8 +48,7 @@ class BlockPlacementLimitTest {
         BlockPlacementLimitConfig config = new BlockPlacementLimitConfig(configPath);
         config.load();
 
-        limit = new BlockPlacementLimit("test", limitsManager);
-        limit.load(config);
+        limit = new BlockPlacementLimit(limitsManager);
         plugin.registerEvents(limit);
 
         player = server.addPlayer();
@@ -61,14 +61,14 @@ class BlockPlacementLimitTest {
 
         Block block = getBlock();
 
-        limit.addPlacedBlock(player, block);
         PlayerBlockPlacementLimit playerLimit = limitsManager.getPlayerLimit(player);
+        playerLimit.addBlock(block);
         assertThat(playerLimit).isNotNull();
 
         assertThat(playerLimit.getCount(block.getType())).isEqualTo(1);
 
         for (int i = 0; i < 10; i++) {
-            limit.addPlacedBlock(player, getBlock());
+            playerLimit.addBlock(getBlock());
         }
 
         assertThat(playerLimit.getCount(block.getType()))
@@ -108,12 +108,13 @@ class BlockPlacementLimitTest {
 
         Block block = world.getBlockAt(0, 0, 0);
 
-        limit.addPlacedBlock(player, block);
+        PlayerBlockPlacementLimit playerLimit = limitsManager.getPlayerLimit(player);
+        playerLimit.addBlock(block);
         Material blockType = block.getType();
-        assertThat(limitsManager.getPlayerLimit(player).getCount(blockType)).isEqualTo(1);
+        assertThat(playerLimit.getCount(blockType)).isEqualTo(1);
 
         player.simulateBlockBreak(block);
-        assertThat(limitsManager.getPlayerLimit(player).getCount(blockType)).isEqualTo(0);
+        assertThat(playerLimit.getCount(blockType)).isEqualTo(0);
     }
 
     private Block getBlock() {
