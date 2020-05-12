@@ -1,3 +1,18 @@
+# [1.0.0-beta.3](https://github.com/Silthus/sLimits/compare/v1.0.0-beta.2...v1.0.0-beta.3) (2020-05-12)
+
+
+### Bug Fixes
+
+* **build:** shadow dependencies into final jar ([0d6a9bc](https://github.com/Silthus/sLimits/commit/0d6a9bce8a8249ed79828a37062e7767a645101c))
+* **release:** depend release on shadow Jar task ([cddbd41](https://github.com/Silthus/sLimits/commit/cddbd41549c53ebff076217a1c7370c5cdfdaf20))
+* **release:** remove shadow artifacts from mvn publish ([2e07159](https://github.com/Silthus/sLimits/commit/2e07159abf428110a8148533160704049a591e9a))
+
+
+### Features
+
+* **cmd:** add /limits command ([9012279](https://github.com/Silthus/sLimits/commit/9012279d54910e7d99c246ef868d1e420fa58de5))
+* **config:** add different limit config modes ([0462fed](https://github.com/Silthus/sLimits/commit/0462fedf428890b05f0ee1fc9bbe4223c2dd3dc2)), closes [#1](https://github.com/Silthus/sLimits/issues/1)
+
 # [1.0.0-beta.2](https://github.com/Silthus/sLimits/compare/v1.0.0-beta.1...v1.0.0-beta.2) (2020-05-11)
 
 
