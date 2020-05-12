@@ -1,3 +1,15 @@
+# [1.1.0](https://github.com/Silthus/sLimits/compare/v1.0.0...v1.1.0) (2020-05-12)
+
+
+### Bug Fixes
+
+* **cmd:** /limits not showing limits with a count of 0 ([718cedd](https://github.com/Silthus/sLimits/commit/718cedd1d122fd8866f81d348810949f3dc25bc5))
+
+
+### Features
+
+* **storage:** combine different limit modes ([059debe](https://github.com/Silthus/sLimits/commit/059debec1a16d187bc9dc3b45b9a5b47845980e6)), closes [#1](https://github.com/Silthus/sLimits/issues/1)
+
 # 1.0.0 (2020-05-12)
 
 
