@@ -203,3 +203,4 @@ dist
 .yarn/unplugged
 .yarn/build-state.yml
 .pnp.*
+/src/test/resources/plugin.yml
