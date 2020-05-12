@@ -1,3 +1,10 @@
+# [1.0.0-beta.4](https://github.com/Silthus/sLimits/compare/v1.0.0-beta.3...v1.0.0-beta.4) (2020-05-12)
+
+
+### Bug Fixes
+
+* **release:** depend release on shadow Jar task ([cddbd41](https://github.com/Silthus/sLimits/commit/cddbd41549c53ebff076217a1c7370c5cdfdaf20))
+
 # [1.0.0-beta.3](https://github.com/Silthus/sLimits/compare/v1.0.0-beta.2...v1.0.0-beta.3) (2020-05-12)
 
 
