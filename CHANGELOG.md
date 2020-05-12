@@ -1,3 +1,10 @@
+# [1.0.0-beta.5](https://github.com/Silthus/sLimits/compare/v1.0.0-beta.4...v1.0.0-beta.5) (2020-05-12)
+
+
+### Bug Fixes
+
+* **release:** remove shadow artifacts from mvn publish ([2e07159](https://github.com/Silthus/sLimits/commit/2e07159abf428110a8148533160704049a591e9a))
+
 # [1.0.0-beta.4](https://github.com/Silthus/sLimits/compare/v1.0.0-beta.3...v1.0.0-beta.4) (2020-05-12)
 
 
