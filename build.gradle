@@ -6,7 +6,7 @@ buildscript {
 }
 
 plugins {
-    id 'com.github.johnrengelman.shadow' version '5.1.0'
+    id 'com.github.johnrengelman.shadow' version '5.2.0'
     id 'kr.entree.spigradle' version '1.2.1'
     id 'java'
     id 'jacoco'
@@ -68,6 +68,7 @@ repositories {
     maven { url = "https://repo.aikar.co/content/groups/aikar/" }
 }
 
+
 dependencies {
     //Adds the spigot api to your plugin
     compileOnly "org.spigotmc:spigot-api:${mcVersion}-R0.1-SNAPSHOT"
@@ -76,8 +77,8 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.12'
 
     //Add your dependencies here
-    compile 'net.silthus:configlib-bukkit:2.3.0'
-    compile 'co.aikar:acf-paper:0.5.0-SNAPSHOT'
+    implementation 'net.silthus:configlib-bukkit:2.3.0'
+    implementation 'co.aikar:acf-paper:0.5.0-SNAPSHOT'
 
     //Test dependencies
     testImplementation 'org.junit.jupiter:junit-jupiter:5.6.2'
@@ -98,9 +99,15 @@ test {
 
 shadowJar {
     classifier = ''
+    dependencies {
+        include(dependency('net.silthus:configlib-bukkit:2.3.0'))
+        include(dependency('co.aikar:acf-paper:0.5.0-SNAPSHOT'))
+    }
     relocate 'co.aikar.commands', "${packageName}.acf"
     relocate 'co.aikar.locales', "${packageName}.locales"
 }
+
+tasks.build.dependsOn(shadowJar)
 
 processResources {
     project.properties.put("version", this.version)
@@ -110,7 +117,7 @@ processResources {
 task cleanPlugin() {
     group 'deploy'
     description 'Cleans the plugin in the working directory up'
-    delete 'working/plugins/' + project.property("pluginName") + '-' + project.version.toString() + '.jar'
+    delete 'working/plugins/' + project.property("pluginName") + '*.jar'
 }
 
 task copyPluginYaml(type: Copy, dependsOn: spigotPluginYaml) {

@@ -31,8 +31,10 @@ jar {
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            groupId = group
             from components.java
+        }
+        shadow(MavenPublication) { publication ->
+            project.shadow.component(publication)
         }
     }
     repositories {
