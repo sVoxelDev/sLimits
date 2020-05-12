@@ -50,9 +50,9 @@ public class FlatFileLimitsStorage implements LimitsStorage {
     @Override
     public PlayerBlockPlacementLimit load(OfflinePlayer player) {
 
-        File file = new File(getLimitsManager().getStoragePath(), player.getUniqueId().toString() + ".yaml");
+        File file = getStorageFile(player.getUniqueId());
         if (!file.exists()) {
-            return getLimitsManager().getPlayerLimit(player);
+            return createPlayerConfig(player);
         } else {
             return loadPlayerConfig(file);
         }
@@ -60,6 +60,13 @@ public class FlatFileLimitsStorage implements LimitsStorage {
 
     private File getStorageFile(UUID player) {
         return new File(getLimitsManager().getStoragePath(), player.toString() + ".yaml");
+    }
+
+    private PlayerBlockPlacementLimit createPlayerConfig(OfflinePlayer player) {
+        StorageConfig config = new StorageConfig(getStorageFile(player.getUniqueId()).toPath());
+        config.setBlockPlacementLimit(new PlayerBlockPlacementLimit(player));
+        config.loadAndSave();
+        return config.getBlockPlacementLimit();
     }
 
     private PlayerBlockPlacementLimit loadPlayerConfig(File file) {
@@ -72,7 +79,7 @@ public class FlatFileLimitsStorage implements LimitsStorage {
     @Setter
     public static class StorageConfig extends BukkitYamlConfiguration {
 
-        private PlayerBlockPlacementLimit blockPlacementLimit;
+        private PlayerBlockPlacementLimit blockPlacementLimit = new PlayerBlockPlacementLimit();
 
         protected StorageConfig(Path path, PlayerBlockPlacementLimit limit) {
             super(path);

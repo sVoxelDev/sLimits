@@ -22,8 +22,8 @@ import java.util.*;
 public class PlayerBlockPlacementLimit {
 
     @Convert(UUIDConverter.class)
-    private UUID playerUUID;
-    private String playerName;
+    private UUID playerUUID = UUID.randomUUID();
+    private String playerName = "UNDEFINED";
     @Convert(LimitModeMapConverter.class)
     private Map<String, LimitMode> limitConfigs = new HashMap<>();
     @Convert(MaterialMapConverter.class)

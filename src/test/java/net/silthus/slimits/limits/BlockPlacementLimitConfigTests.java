@@ -42,7 +42,7 @@ public class BlockPlacementLimitConfigTests {
     @Test
     @DisplayName("should load limit mode")
     public void shouldLoadLimitMode() {
-        assertThat(config.getMode()).isEqualTo(LimitMode.BLACKLIST);
+        assertThat(config.getMode()).isEqualTo(LimitMode.ADD);
     }
 
     @Test
@@ -62,7 +62,7 @@ public class BlockPlacementLimitConfigTests {
     @DisplayName("should get empty optional limit if not configured")
     public void shouldGetEmptyLimitIfNotConfigured() {
 
-        assertThat(config.getLimit(Material.AIR)).isEqualTo(Optional.empty());
+        assertThat(config.getBlocks().get(Material.AIR)).isNull();
     }
 
     @Test
@@ -73,7 +73,7 @@ public class BlockPlacementLimitConfigTests {
         BlockPlacementLimitConfig config = new BlockPlacementLimitConfig(path);
         config.load();
 
-        assertThat(config.getMode()).isEqualTo(LimitMode.WHITELIST);
+        assertThat(config.getMode()).isEqualTo(LimitMode.ADD);
 
         assertThat(config.getBlocks()).isNotNull().hasSize(2);
     }

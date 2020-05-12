@@ -3,7 +3,9 @@ package net.silthus.slimits.limits;
 import be.seeseemelk.mockbukkit.MockBukkit;
 import be.seeseemelk.mockbukkit.ServerMock;
 import be.seeseemelk.mockbukkit.entity.PlayerMock;
+import lombok.Getter;
 import lombok.SneakyThrows;
+import net.silthus.slimits.LimitsManager;
 import net.silthus.slimits.LimitsPlugin;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.math.RandomUtils;
@@ -23,14 +25,16 @@ import static org.assertj.core.api.Assertions.byLessThan;
 @DisplayName("player block placement limit")
 public class PlayerBlockPlacementLimitTest {
 
+    @Getter
     private static ServerMock server;
-    private static LimitsPlugin plugin;
+    @Getter
     private PlayerMock player;
+    @Getter
+    private PlayerBlockPlacementLimit playerLimit;
 
     @BeforeAll
     public static void setUp() {
         server = MockBukkit.mock();
-        plugin = MockBukkit.loadWith(LimitsPlugin.class, new File("src/test/resources/plugin.yml"));
     }
 
     @AfterAll
@@ -45,33 +49,17 @@ public class PlayerBlockPlacementLimitTest {
         FileUtils.deleteDirectory(storage);
 
         player = server.addPlayer();
-    }
 
-    @Test
-    @DisplayName("should create storage file with uuid and identifier")
-    public void shouldCreateStorageFile() {
-        Path storage = new File(new File(LimitsPlugin.PLUGIN_PATH, "storage"), player.getUniqueId().toString() + ".yaml").toPath();
-
-        assertThat(storage.toFile()).doesNotExist();
-
-        PlayerBlockPlacementLimit.create(player);
-
-        assertThat(storage.toFile())
-                .exists()
-                .canRead()
-                .canWrite()
-                .isNotEmpty();
+        playerLimit = new PlayerBlockPlacementLimit(player);
     }
 
     @Test
     @DisplayName("should set player uuid and name in config")
     public void shouldSetPlayerData() {
 
-        PlayerBlockPlacementLimit limit = PlayerBlockPlacementLimit.create(player);
-
-        assertThat(limit.getPlayerUUID())
+        assertThat(getPlayerLimit().getPlayerUUID())
                 .isEqualTo(player.getUniqueId());
-        assertThat(limit.getPlayerName())
+        assertThat(getPlayerLimit().getPlayerName())
                 .isEqualTo(player.getName());
     }
 
@@ -79,14 +67,12 @@ public class PlayerBlockPlacementLimitTest {
     @DisplayName("addBlock() should increase block type count")
     public void shouldIncreaseBlockTypeCount() {
 
-        PlayerBlockPlacementLimit limit = PlayerBlockPlacementLimit.create(player);
-
-        assertThat(limit.getCounts()).isEmpty();
+        assertThat(getPlayerLimit().getCounts()).isEmpty();
 
         Block block = getBlock();
-        limit.addBlock(block);
+        getPlayerLimit().addBlock(block);
 
-        assertThat(limit.getCounts())
+        assertThat(getPlayerLimit().getCounts())
                 .hasSize(1)
                 .containsEntry(block.getType(), 1);
     }
@@ -95,15 +81,13 @@ public class PlayerBlockPlacementLimitTest {
     @DisplayName("addBlock() should add block to location list")
     public void shouldAddBlockLocation() {
 
-        PlayerBlockPlacementLimit limit = PlayerBlockPlacementLimit.create(player);
-
-        assertThat(limit.getLocations()).isEmpty();
+        assertThat(getPlayerLimit().getLocations()).isEmpty();
 
 
         Block block = getBlock();
-        limit.addBlock(block);
+        getPlayerLimit().addBlock(block);
 
-        assertThat(limit.getLocations())
+        assertThat(getPlayerLimit().getLocations())
                 .hasSize(1)
                 .contains(block.getLocation());
     }
@@ -112,15 +96,13 @@ public class PlayerBlockPlacementLimitTest {
     @DisplayName("getCount() should get correct count")
     public void shouldGetCorrectCountForType() {
 
-        PlayerBlockPlacementLimit limit = PlayerBlockPlacementLimit.create(player);
-
         Block block = getBlock();
-        assertThat(limit.getCount(block.getType()))
+        assertThat(getPlayerLimit().getCount(block.getType()))
                 .isEqualTo(0);
 
-        limit.addBlock(block);
+        getPlayerLimit().addBlock(block);
 
-        assertThat(limit.getCount(block.getType()))
+        assertThat(getPlayerLimit().getCount(block.getType()))
                 .isEqualTo(1);
     }
 
@@ -128,18 +110,16 @@ public class PlayerBlockPlacementLimitTest {
     @DisplayName("addBlock() should not count already placed blocks")
     public void shouldNotAddDuplicateBlocks() {
 
-        PlayerBlockPlacementLimit limit = PlayerBlockPlacementLimit.create(player);
-
         Block block = getBlock();
-        assertThat(limit.getCount(block.getType()))
+        assertThat(getPlayerLimit().getCount(block.getType()))
                 .isEqualTo(0);
 
-        limit.addBlock(block);
-        assertThat(limit.getCount(block.getType()))
+        getPlayerLimit().addBlock(block);
+        assertThat(getPlayerLimit().getCount(block.getType()))
                 .isEqualTo(1);
 
-        limit.addBlock(block);
-        assertThat(limit.getCount(block.getType()))
+        getPlayerLimit().addBlock(block);
+        assertThat(getPlayerLimit().getCount(block.getType()))
                 .isEqualTo(1);
     }
 
@@ -147,19 +127,17 @@ public class PlayerBlockPlacementLimitTest {
     @DisplayName("hasPlacedBlock() should check placed blocks")
     public void testHasPlacedBlock() {
 
-        PlayerBlockPlacementLimit limit = PlayerBlockPlacementLimit.create(player);
-
         Block block = getBlock();
 
-        assertThat(limit.hasPlacedBlock(block))
+        assertThat(getPlayerLimit().hasPlacedBlock(block))
                 .isFalse();
 
-        limit.addBlock(block);
-        assertThat(limit.hasPlacedBlock(block))
+        getPlayerLimit().addBlock(block);
+        assertThat(getPlayerLimit().hasPlacedBlock(block))
                 .isTrue();
 
-        limit.removeBlock(block);
-        assertThat(limit.hasPlacedBlock(block))
+        getPlayerLimit().removeBlock(block);
+        assertThat(getPlayerLimit().hasPlacedBlock(block))
                 .isFalse();
     }
 
@@ -167,24 +145,23 @@ public class PlayerBlockPlacementLimitTest {
     @DisplayName("removeBlock() should decrease counter")
     public void shouldRemoveBlockFromCount() {
 
-        PlayerBlockPlacementLimit limit = PlayerBlockPlacementLimit.create(player);
-        assertThat(limit.getCounts())
+        assertThat(getPlayerLimit().getCounts())
                 .isEmpty();
 
         for (int i = 0; i < 10; i++) {
-            limit.addBlock(getBlock());
+            getPlayerLimit().addBlock(getBlock());
         }
 
         Block block = getBlock();
-        limit.addBlock(block);
-        assertThat(limit.getCounts())
+        getPlayerLimit().addBlock(block);
+        assertThat(getPlayerLimit().getCounts())
                 .hasSizeBetween(1, 11)
                 .containsKeys(block.getType());
 
-        int count = limit.getCount(block.getType());
+        int count = getPlayerLimit().getCount(block.getType());
 
-        limit.removeBlock(block);
-        assertThat(limit.getCount(block.getType()))
+        getPlayerLimit().removeBlock(block);
+        assertThat(getPlayerLimit().getCount(block.getType()))
                 .isEqualTo(count - 1);
     }
 
@@ -192,16 +169,15 @@ public class PlayerBlockPlacementLimitTest {
     @DisplayName("removeBlock() should remove block from locations")
     public void shouldRemoveBlockFromLocations() {
 
-        PlayerBlockPlacementLimit limit = PlayerBlockPlacementLimit.create(player);
-        assertThat(limit.getLocations())
+        assertThat(getPlayerLimit().getLocations())
                 .isEmpty();
 
 
         Block block = getBlock();
-        limit.getLocations().add(block.getLocation());
+        getPlayerLimit().getLocations().add(block.getLocation());
 
-        limit.removeBlock(block);
-        assertThat(limit.getLocations())
+        getPlayerLimit().removeBlock(block);
+        assertThat(getPlayerLimit().getLocations())
                 .isEmpty();
     }
 

@@ -8,16 +8,13 @@ import net.silthus.slimits.limits.BlockPlacementLimitConfig;
 import net.silthus.slimits.limits.PlayerBlockPlacementLimit;
 import net.silthus.slimits.storage.FlatFileLimitsStorage;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.graalvm.compiler.lir.alloc.lsra.LinearScan;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
