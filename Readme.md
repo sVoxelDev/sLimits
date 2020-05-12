@@ -55,7 +55,7 @@ You can use the following commands to manage your limits.
 
 | Command | Description | Permission |
 | :-----: | ----------- | ------- |
-| `/limits [player]` | Shows the limits of the current or another player. | * `slimits.cmd.limits`: Can show own limits.<br>* `slimits.cmd.limits.all`: Can lookup the limits of all players. |
+| `/limits [player]` | Shows the limits of the current or another player. | none |
 
 
 ## Permissions
