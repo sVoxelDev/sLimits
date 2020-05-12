@@ -33,9 +33,6 @@ publishing {
         mavenJava(MavenPublication) {
             from components.java
         }
-        shadow(MavenPublication) { publication ->
-            project.shadow.component(publication)
-        }
     }
     repositories {
         maven {
