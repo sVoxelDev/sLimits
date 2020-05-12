@@ -108,6 +108,7 @@ shadowJar {
 }
 
 tasks.build.dependsOn(shadowJar)
+tasks.publish.dependsOn(shadowJar)
 
 processResources {
     project.properties.put("version", this.version)
