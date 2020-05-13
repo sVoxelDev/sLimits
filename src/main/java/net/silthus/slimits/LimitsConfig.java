@@ -1,16 +1,11 @@
 package net.silthus.slimits;
 
 import de.exlll.configlib.annotation.Comment;
-import de.exlll.configlib.annotation.ElementType;
 import de.exlll.configlib.configs.yaml.BukkitYamlConfiguration;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import net.silthus.slimits.limits.BlockPlacementLimitConfig;
 
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Setter

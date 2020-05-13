@@ -3,7 +3,6 @@ package net.silthus.slimits.config;
 import de.exlll.configlib.Converter;
 import net.silthus.slib.util.EnumUtils;
 import net.silthus.slimits.LimitMode;
-import org.bukkit.Material;
 
 import java.util.Map;
 

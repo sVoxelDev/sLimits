@@ -8,7 +8,7 @@ public enum LimitMode {
      * If a player has a config with an absolute limit,
      * that config will define the total limit of the player
      * for all blocks configured in that config.
-     *
+     * <p>
      * Only one absolute config can be configured at a time.
      */
     ABSOLUTE,

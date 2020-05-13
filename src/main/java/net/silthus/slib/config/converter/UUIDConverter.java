@@ -1,12 +1,8 @@
 package net.silthus.slib.config.converter;
 
 import de.exlll.configlib.Converter;
-import org.bukkit.Material;
 
-import java.util.Map;
 import java.util.UUID;
-
-import static java.util.stream.Collectors.toMap;
 
 public final class UUIDConverter
         implements Converter<UUID, String> {

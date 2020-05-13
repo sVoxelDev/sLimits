@@ -15,7 +15,6 @@ import org.bukkit.Material;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 @Getter
 @Setter

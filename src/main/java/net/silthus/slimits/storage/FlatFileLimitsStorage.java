@@ -1,6 +1,5 @@
 package net.silthus.slimits.storage;
 
-import de.exlll.configlib.annotation.ElementType;
 import de.exlll.configlib.configs.yaml.BukkitYamlConfiguration;
 import lombok.Data;
 import lombok.Getter;

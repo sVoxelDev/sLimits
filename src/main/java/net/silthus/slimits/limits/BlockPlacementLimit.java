@@ -1,7 +1,6 @@
 package net.silthus.slimits.limits;
 
 import lombok.Getter;
-import net.silthus.slimits.Constants;
 import net.silthus.slimits.LimitsManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -12,8 +11,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-
-import java.util.Optional;
 
 public class BlockPlacementLimit implements Listener {
 

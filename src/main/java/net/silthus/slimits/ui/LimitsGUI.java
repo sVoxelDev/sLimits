@@ -6,7 +6,6 @@ import com.github.stefvanschie.inventoryframework.pane.PaginatedPane;
 import net.silthus.slimits.LimitsManager;
 import net.silthus.slimits.LimitsPlugin;
 import net.silthus.slimits.limits.PlayerBlockPlacementLimit;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
