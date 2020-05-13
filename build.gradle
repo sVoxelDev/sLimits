@@ -10,6 +10,7 @@ plugins {
     id 'kr.entree.spigradle' version '1.2.1'
     id 'java'
     id 'jacoco'
+    id 'org.jetbrains.kotlin.jvm' version '1.3.72'
 }
 
 apply from: "$rootDir/gradle/jacoco.gradle"
@@ -66,6 +67,7 @@ repositories {
 
     //Add your repositories here
     maven { url = "https://repo.aikar.co/content/groups/aikar/" }
+    maven { url 'https://jitpack.io' }
 }
 
 
@@ -79,6 +81,7 @@ dependencies {
     //Add your dependencies here
     implementation 'net.silthus:configlib-bukkit:2.3.0'
     implementation 'co.aikar:acf-paper:0.5.0-SNAPSHOT'
+    implementation 'com.github.stefvanschie.inventoryframework:IF:0.5.19'
 
     //Test dependencies
     testImplementation 'org.junit.jupiter:junit-jupiter:5.6.2'
@@ -102,9 +105,12 @@ shadowJar {
     dependencies {
         include(dependency('net.silthus:configlib-bukkit:2.3.0'))
         include(dependency('co.aikar:acf-paper:0.5.0-SNAPSHOT'))
+        include(dependency('com.github.stefvanschie.inventoryframework:IF:0.5.19'))
     }
     relocate 'co.aikar.commands', "${packageName}.acf"
     relocate 'co.aikar.locales', "${packageName}.locales"
+    relocate 'de.exlll.configlib', "${packageName}.configlib"
+    relocate 'com.github.stefvanschie.inventoryframework', "${packageName}.inventoryframework"
 }
 
 tasks.build.dependsOn(shadowJar)
@@ -181,3 +187,13 @@ task setupServer {
 }
 
 defaultTasks 'build', 'deploy'
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+compileTestKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}

@@ -5,14 +5,12 @@ import kr.entree.spigradle.Plugin;
 import lombok.Getter;
 import net.silthus.slib.bukkit.BasePlugin;
 import net.silthus.slimits.commands.LimitsCommand;
-import org.bukkit.event.EventHandler;
+import net.silthus.slimits.ui.LimitsGUI;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPluginLoader;
 
 import java.io.File;
-import java.nio.file.Path;
 
 @Plugin
 public class LimitsPlugin extends BasePlugin implements Listener {
@@ -21,6 +19,8 @@ public class LimitsPlugin extends BasePlugin implements Listener {
 
     @Getter
     private LimitsManager limitsManager;
+    @Getter
+    private LimitsGUI gui;
     private PaperCommandManager commandManager;
 
     public LimitsPlugin() {
@@ -37,9 +37,10 @@ public class LimitsPlugin extends BasePlugin implements Listener {
         PLUGIN_PATH = getDataFolder().getAbsolutePath();
 
         this.limitsManager = new LimitsManager(this);
+        this.gui = new LimitsGUI(this, limitsManager);
         this.commandManager = new PaperCommandManager(this);
 
-        this.commandManager.registerCommand(new LimitsCommand(getLimitsManager()));
+        this.commandManager.registerCommand(new LimitsCommand(getLimitsManager(), getGui()));
 
         load();
     }

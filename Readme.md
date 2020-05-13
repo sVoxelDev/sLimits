@@ -84,6 +84,7 @@ You can use the following commands to manage your limits.
 | Command | Description | Permission |
 | :-----: | ----------- | ------- |
 | `/limits [player]` | Shows the limits of the current or another player. | none |
+| `/limits show [player]` | Shows the limits of the current or another player in a chest gui. | none |
 
 ### Admin Commands
 
