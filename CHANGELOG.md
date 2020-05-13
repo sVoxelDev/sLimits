@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/Silthus/sLimits/compare/v1.1.0...v1.2.0) (2020-05-13)
+
+
+### Features
+
+* **gui:** add chest gui to show limits ([bb37125](https://github.com/Silthus/sLimits/commit/bb3712539b4d0906bcc7496480def5bcf660f4fd)), closes [#2](https://github.com/Silthus/sLimits/issues/2)
+
 # [1.1.0](https://github.com/Silthus/sLimits/compare/v1.0.0...v1.1.0) (2020-05-12)
 
 
