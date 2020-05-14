@@ -2,11 +2,11 @@ package net.silthus.slimits.limits;
 
 import de.exlll.configlib.annotation.ConfigurationElement;
 import de.exlll.configlib.annotation.Convert;
+import de.exlll.configlib.annotation.Ignore;
 import lombok.Getter;
 import lombok.Setter;
 import net.silthus.slib.config.converter.LocationListConverter;
 import net.silthus.slib.config.converter.MaterialMapConverter;
-import net.silthus.slib.config.converter.MaterialMapStringSetConverter;
 import net.silthus.slib.config.converter.UUIDConverter;
 import net.silthus.slimits.Constants;
 import net.silthus.slimits.LimitMode;
@@ -27,15 +27,15 @@ public class PlayerBlockPlacementLimit {
     @Convert(UUIDConverter.class)
     private UUID playerUUID = UUID.randomUUID();
     private String playerName = "UNDEFINED";
-    @Convert(LimitModeMapConverter.class)
+    @Ignore
     private Map<String, LimitMode> limitConfigs = new HashMap<>();
-    @Convert(MaterialMapConverter.class)
+    @Ignore
     private Map<Material, Integer> limits = new HashMap<>();
     @Convert(MaterialMapConverter.class)
     private Map<Material, Integer> counts = new HashMap<>();
     @Convert(LocationListConverter.class)
     private List<Location> locations = new ArrayList<>();
-    @Convert(MaterialMapStringSetConverter.class)
+    @Ignore
     private Map<Material, Set<String>> blockTypePermissions = new HashMap<>();
 
     public PlayerBlockPlacementLimit(OfflinePlayer player) {
