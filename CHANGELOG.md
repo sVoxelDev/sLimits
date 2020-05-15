@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/Silthus/sLimits/compare/v1.2.1...v1.3.0) (2020-05-15)
+
+
+### Features
+
+* **gui:** show placed blocks in gui and via command ([b020eb9](https://github.com/Silthus/sLimits/commit/b020eb9841094c63f71223856bd51287f886b946)), closes [#4](https://github.com/Silthus/sLimits/issues/4)
+
 ## [1.2.1](https://github.com/Silthus/sLimits/compare/v1.2.0...v1.2.1) (2020-05-15)
 
 
