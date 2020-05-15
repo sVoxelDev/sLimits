@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/Silthus/sLimits/compare/v1.2.0...v1.2.1) (2020-05-15)
+
+
+### Bug Fixes
+
+* **limits:** do not store limits on disk - always reload from config ([56dd120](https://github.com/Silthus/sLimits/commit/56dd120cae24c527cdb5ea12eecff52ab276c020))
+
 # [1.2.0](https://github.com/Silthus/sLimits/compare/v1.1.0...v1.2.0) (2020-05-13)
 
 
