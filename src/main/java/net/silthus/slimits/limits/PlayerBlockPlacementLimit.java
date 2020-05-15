@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.silthus.slib.config.converter.LocationListConverter;
 import net.silthus.slib.config.converter.MaterialMapConverter;
+import net.silthus.slib.config.converter.MaterialMapLocationListConverter;
 import net.silthus.slib.config.converter.UUIDConverter;
 import net.silthus.slimits.Constants;
 import net.silthus.slimits.LimitMode;
@@ -33,8 +34,8 @@ public class PlayerBlockPlacementLimit {
     private Map<Material, Integer> limits = new HashMap<>();
     @Convert(MaterialMapConverter.class)
     private Map<Material, Integer> counts = new HashMap<>();
-    @Convert(LocationListConverter.class)
-    private List<Location> locations = new ArrayList<>();
+    @Convert(MaterialMapLocationListConverter.class)
+    private Map<Material, List<Location>> blockLocations = new HashMap<>();
     @Ignore
     private Map<Material, Set<String>> blockTypePermissions = new HashMap<>();
 
@@ -118,7 +119,7 @@ public class PlayerBlockPlacementLimit {
         currentCount++;
 
         counts.put(block.getType(), currentCount);
-        locations.add(block.getLocation());
+        addBlockLocation(block);
 
         return currentCount;
     }
@@ -132,7 +133,11 @@ public class PlayerBlockPlacementLimit {
 
     public boolean hasPlacedBlock(Block block) {
 
-        return getLocations().contains(block.getLocation());
+        return getLocations(block.getType()).contains(block.getLocation());
+    }
+
+    public List<Location> getLocations(Material material) {
+        return blockLocations.getOrDefault(material, new ArrayList<>());
     }
 
     public int removeBlock(Block block) {
@@ -140,7 +145,7 @@ public class PlayerBlockPlacementLimit {
         Material blockType = block.getType();
         int count = getCount(blockType);
 
-        if (getLocations().remove(block.getLocation())) {
+        if (removeBlockLocation(block)) {
             count--;
             getCounts().put(blockType, count);
         }
@@ -187,5 +192,17 @@ public class PlayerBlockPlacementLimit {
             }
             blockTypePermissions.get(material).remove(config.getPermission());
         }
+    }
+
+    private void addBlockLocation(Block block) {
+
+        if (!blockLocations.containsKey(block.getType())) {
+            blockLocations.put(block.getType(), new ArrayList<>());
+        }
+        blockLocations.get(block.getType()).add(block.getLocation());
+    }
+
+    private boolean removeBlockLocation(Block block) {
+        return blockLocations.getOrDefault(block.getType(), new ArrayList<>()).remove(block.getLocation());
     }
 }

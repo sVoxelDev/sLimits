@@ -7,8 +7,12 @@ import net.silthus.slimits.LimitsManager;
 import net.silthus.slimits.limits.PlayerBlockPlacementLimit;
 import net.silthus.slimits.ui.LimitsGUI;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.command.CommandException;
 import org.bukkit.entity.Player;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,6 +49,29 @@ public class LimitsCommand extends BaseCommand {
         });
 
         player.sendMessage(messages.toArray(new String[0]));
+    }
+
+    @Subcommand("loc")
+    @Description("Lists all placed blocks of a certain type.")
+    public void listLocations(Material material) {
+
+        if (!getCurrentCommandIssuer().isPlayer()) {
+            throw new CommandException("This command can only be executed as a player.");
+        }
+
+        getCurrentCommandIssuer().sendMessage(ChatColor.BOLD + "" + ChatColor.DARK_PURPLE + "---=== " + ChatColor.YELLOW + "Your placed " + material.name() + " blocks" + ChatColor.DARK_PURPLE + "===---");
+        List<String> messages = new ArrayList<>();
+
+        List<Location> locations = getLimitsManager().getPlayerLimit(getCurrentCommandIssuer().getIssuer()).getLocations(material);
+        locations.forEach(location -> {
+            messages.add(ChatColor.YELLOW + "x: " + ChatColor.GREEN + location.getBlockX()
+                    + ChatColor.YELLOW + " y: " + ChatColor.GREEN + location.getBlockY()
+                    + ChatColor.YELLOW + " z: " + ChatColor.GREEN + location.getBlockZ()
+                    + ChatColor.GRAY + " world: " + location.getWorld().getName()
+            );
+        });
+
+        ((Player) getCurrentCommandIssuer().getIssuer()).sendMessage(messages.toArray(new String[0]));
     }
 
     @Subcommand("show")

@@ -1,6 +1,5 @@
 [![Build Status](https://github.com/Silthus/sLimits/workflows/Build/badge.svg)](../../actions?query=workflow%3ABuild)
 [![GitHub release (latest SemVer including pre-releases)](https://img.shields.io/github/v/release/Silthus/sLimits?include_prereleases&label=release)](../../releases)
-[![codecov](https://codecov.io/gh/Silthus/sLimits/branch/master/graph/badge.svg)](https://codecov.io/gh/Silthus/sLimits)
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 
@@ -30,6 +29,7 @@ The plugin currently supports the following features. Please [open a feature req
 - Player data is **stored in flat files** inside the `storage/` directory.
 - **Unique permissions** per limit config. Only if a player has that permission the limits of the config are checked.
 - **Combine multiple configs** with different modes: `ADD`, `SUBTRACT` and `ABSOLUTE`.
+- **Chest UI** to show your limits and placed block locations.
 
 ### Supported Versions
 
@@ -85,6 +85,7 @@ You can use the following commands to manage your limits.
 | :-----: | ----------- | ------- |
 | `/limits [player]` | Shows the limits of the current or another player. | none |
 | `/limits show [player]` | Shows the limits of the current or another player in a chest gui. | none |
+| `/limits loc <block_type>` | Shows all block locations of a certain type. | none |
 
 ### Admin Commands
 
