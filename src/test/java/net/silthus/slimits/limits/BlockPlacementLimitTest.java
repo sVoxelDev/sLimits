@@ -90,7 +90,7 @@ class BlockPlacementLimitTest {
         Block block = world.getBlockAt(0, 0, 0);
 
         assertThat(playerLimit.getCounts()).hasSizeBetween(1, 5);
-        assertThat(playerLimit.getLocations()).hasSize(5);
+        assertThat(playerLimit.getLocations(block.getType())).hasSize(5);
 
         int count = playerLimit.getCount(block.getType());
 

@@ -81,13 +81,13 @@ public class PlayerBlockPlacementLimitTest {
     @DisplayName("addBlock() should add block to location list")
     public void shouldAddBlockLocation() {
 
-        assertThat(getPlayerLimit().getLocations()).isEmpty();
+        assertThat(getPlayerLimit().getLocations(Material.AIR)).isEmpty();
 
 
         Block block = getBlock();
         getPlayerLimit().addBlock(block);
 
-        assertThat(getPlayerLimit().getLocations())
+        assertThat(getPlayerLimit().getLocations(block.getType()))
                 .hasSize(1)
                 .contains(block.getLocation());
     }
@@ -169,15 +169,15 @@ public class PlayerBlockPlacementLimitTest {
     @DisplayName("removeBlock() should remove block from locations")
     public void shouldRemoveBlockFromLocations() {
 
-        assertThat(getPlayerLimit().getLocations())
+        assertThat(getPlayerLimit().getLocations(Material.AIR))
                 .isEmpty();
 
 
         Block block = getBlock();
-        getPlayerLimit().getLocations().add(block.getLocation());
+        getPlayerLimit().getLocations(block.getType()).add(block.getLocation());
 
         getPlayerLimit().removeBlock(block);
-        assertThat(getPlayerLimit().getLocations())
+        assertThat(getPlayerLimit().getLocations(block.getType()))
                 .isEmpty();
     }
 
