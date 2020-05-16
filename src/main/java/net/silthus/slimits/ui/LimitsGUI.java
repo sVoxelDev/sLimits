@@ -43,9 +43,19 @@ public class LimitsGUI {
             ItemStack item = new ItemStack(material);
 
             ItemMeta itemMeta = item.getItemMeta();
-            itemMeta.setDisplayName(sb.append(ChatColor.BOLD).append(ChatColor.GREEN).append(material.name()).append(": ")
+            int count = playerLimit.getCount(material);
+            double usage = count * 100.0 / limit * 100.0;
+
+            ChatColor color = ChatColor.GREEN;
+            if (usage >= 95) {
+                color = ChatColor.RED;
+            } else if (usage > 80) {
+                color = ChatColor.YELLOW;
+            }
+
+            itemMeta.setDisplayName(sb.append(ChatColor.BOLD).append(color).append(material.name()).append(": ")
                     .append(ChatColor.RESET).append(ChatColor.AQUA)
-                    .append(playerLimit.getCount(material)).append(ChatColor.GREEN).append("/").append(ChatColor.AQUA).append(limit)
+                    .append(count).append(ChatColor.GREEN).append("/").append(ChatColor.AQUA).append(limit)
                     .append(ChatColor.YELLOW).append(" blocks placed.")
                     .toString());
             itemMeta.setLore(Arrays.asList(ChatColor.GRAY + "" + ChatColor.BOLD + "Click: " + ChatColor.RESET + ChatColor.GRAY + "show placed block locations."));
