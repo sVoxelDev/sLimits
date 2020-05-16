@@ -12,6 +12,7 @@ import org.bukkit.OfflinePlayer;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 @Data
 public class FlatFileLimitsStorage implements LimitsStorage {
@@ -70,7 +71,20 @@ public class FlatFileLimitsStorage implements LimitsStorage {
 
     private PlayerBlockPlacementLimit loadPlayerConfig(File file) {
         StorageConfig storageConfig = new StorageConfig(file.toPath());
-        storageConfig.load();
+        try {
+            storageConfig.load();
+        } catch (Exception e) {
+            Logger logger = getLimitsManager().getPlugin().getLogger();
+            logger.severe("Failed to load player data from " + file.getAbsolutePath() + ": " + e.getMessage());
+            e.printStackTrace();
+            File invalidConfig = new File(file, "_INVALID");
+            if (file.renameTo(invalidConfig)) {
+                storageConfig.loadAndSave();
+                logger.info("Renamed invalid config to " + invalidConfig.getName() + " and created a new blank save state.");
+            } else {
+                logger.warning("Failed to rename invalid config! Please check your file permissions and manually remove or update the config.");
+            }
+        }
         return storageConfig.getBlockPlacementLimit();
     }
 

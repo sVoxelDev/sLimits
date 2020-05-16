@@ -1,9 +1,12 @@
 package net.silthus.slimits.limits;
 
 import lombok.Getter;
+import net.silthus.slimits.LimitsConfig;
 import net.silthus.slimits.LimitsManager;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -11,6 +14,9 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+
+import java.util.Optional;
+import java.util.UUID;
 
 public class BlockPlacementLimit implements Listener {
 
@@ -55,6 +61,7 @@ public class BlockPlacementLimit implements Listener {
             Material blockType = block.getType();
 
             int placedBlockAmount = playerLimit.addBlock(block);
+            getLimitsManager().savePlayerLimits(player);
 
             player.sendMessage(ChatColor.AQUA
                     + "You placed "
@@ -66,8 +73,30 @@ public class BlockPlacementLimit implements Listener {
         });
     }
 
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    @EventHandler(ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
+
+        Optional<UUID> blockOwner = getLimitsManager().getBlockOwner(event.getBlock());
+
+        if (!blockOwner.isPresent() || blockOwner.get().equals(event.getPlayer().getUniqueId())) return;
+
+        OfflinePlayer owner = Bukkit.getOfflinePlayer(blockOwner.get());
+
+        LimitsConfig.BlockPlacementConfig blockConfig = getLimitsManager().getPluginConfig().getBlockConfig();
+        if (blockConfig.isBlockLimitedBlockDestruction()) {
+            event.getPlayer().sendMessage(ChatColor.RED + "This limited block was placed by " + owner.getName() + ". You cannot destroy it.");
+            event.setCancelled(true);
+            return;
+        } else if (blockConfig.isDeleteBlocksDestroyedByOthers()) {
+            PlayerBlockPlacementLimit playerLimit = getLimitsManager().getPlayerLimit(owner);
+            playerLimit.removeBlock(event.getBlock());
+            getLimitsManager().savePlayerLimits(owner);
+            event.getPlayer().sendMessage(ChatColor.GRAY + "You destroyed a limited block from " + owner.getName() + ".");
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void afterBlockBreak(BlockBreakEvent event) {
 
         PlayerBlockPlacementLimit playerLimit = getLimitsManager().getPlayerLimit(event.getPlayer());
 
@@ -77,6 +106,7 @@ public class BlockPlacementLimit implements Listener {
 
         playerLimit.getLimit(event.getBlock().getType()).ifPresent(limit -> {
             int newCount = playerLimit.removeBlock(event.getBlock());
+            getLimitsManager().savePlayerLimits(event.getPlayer());
 
             event.getPlayer().sendMessage(ChatColor.AQUA
                     + "You removed a placed block. You placed "

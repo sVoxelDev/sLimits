@@ -1,7 +1,10 @@
 package net.silthus.slimits;
 
 import de.exlll.configlib.annotation.Comment;
+import de.exlll.configlib.annotation.ConfigurationElement;
 import de.exlll.configlib.configs.yaml.BukkitYamlConfiguration;
+import de.exlll.configlib.format.FieldNameFormatter;
+import de.exlll.configlib.format.FieldNameFormatters;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,12 +18,31 @@ public class LimitsConfig extends BukkitYamlConfiguration {
     private StorageType storage = StorageType.FLATFILES;
     @Comment("Tell the plugin where you want your player data to be stored. Defaults to: storage/ inside the plugin folder.")
     private String storagePath = "storage";
-
-    public LimitsConfig(Path path, BukkitYamlProperties properties) {
-        super(path, properties);
-    }
+    private BlockPlacementConfig blockConfig = new BlockPlacementConfig();
 
     public LimitsConfig(Path path) {
-        super(path);
+        super(path,
+                BukkitYamlProperties.builder()
+                    .setFormatter(FieldNameFormatters.LOWER_UNDERSCORE)
+                    .build()
+        );
+    }
+
+    @Getter
+    @Setter
+    @ConfigurationElement
+    public static class BlockPlacementConfig {
+
+        @Comment({
+                "If set to false, blocks that other players destroy will not be subtracted from the player limit.",
+                "Could be used for PvP scenarios.",
+                "Defaults to: true"
+        })
+        private boolean deleteBlocksDestroyedByOthers = true;
+        @Comment({
+                "If set to true, only the player who placed a block can destroy it.",
+                "Defaults to: false"
+        })
+        private boolean blockLimitedBlockDestruction = false;
     }
 }

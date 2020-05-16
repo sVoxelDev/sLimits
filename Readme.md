@@ -43,6 +43,25 @@ Simply drop the plugin into your `plugins` folder and restart your server.
 
 ## Configuration
 
+There is a main `config.yaml` in the plugins directory which holds some global options.
+
+```yaml
+# The type of storage to use.
+# Currently only supports: FLATFILES
+storage: FLATFILES
+# A path where to store your data in.
+# Must be a relative path based of your plugins data directory.
+storage_path: storage
+# You can define some block limit defaults here
+block_config:
+    # Set to false when you do not want to decrease the limit counter
+    # if someone else destroys a limited block played by a player.
+    delete_blocks_destroyed_by_others: true
+    # Set to true if you want to completely block destruction
+    # of limited blocks by other players than the one who placed the block.
+    block_limited_block_destruction: false
+```
+
 You can configure your limits by creating a limit config inside the `limits/` directory.
 Currently the config only supports a `blocks` section where you can define the blocks and their amount that players are allowed to place.
 

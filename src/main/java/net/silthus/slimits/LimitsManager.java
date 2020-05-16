@@ -8,16 +8,16 @@ import net.silthus.slimits.limits.BlockPlacementLimitConfig;
 import net.silthus.slimits.limits.PlayerBlockPlacementLimit;
 import net.silthus.slimits.storage.FlatFileLimitsStorage;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Getter
 public class LimitsManager implements Listener {
@@ -51,6 +51,8 @@ public class LimitsManager implements Listener {
         ConfigUtil.loadRecursiveConfigs(
                 plugin, "limits", BlockPlacementLimitConfig.class, this::loadLimit);
         getPlugin().getLogger().info("Loaded " + limitConfigs.size() + " limit configs.");
+
+        loadAllPlayerLimits();
 
         getPlugin().registerEvents(this);
         getPlugin().registerEvents(getBlockPlacementLimit());
@@ -104,8 +106,33 @@ public class LimitsManager implements Listener {
         return new File(getPlugin().getDataFolder(), getPluginConfig().getStoragePath());
     }
 
-    public void savePlayerLimits(Player player) {
+    public void savePlayerLimits(OfflinePlayer player) {
         getStorage().store(getPlayerLimit(player));
+    }
+
+    /**
+     * Gets the uuid of the player who placed/owns the block.
+     *
+     * @param block to get owner for
+     * @return UUID of the one who placed the block. Empty optional if no owner was found.
+     */
+    public Optional<UUID> getBlockOwner(Block block) {
+        return getPlayerLimits().values().stream()
+                .filter(limit -> limit.hasPlacedBlock(block))
+                .findFirst()
+                .map(PlayerBlockPlacementLimit::getPlayerUUID);
+    }
+
+    private void loadAllPlayerLimits() {
+
+        if (getStorage() == null) return;
+
+        for (PlayerBlockPlacementLimit playerBlockPlacementLimit : getStorage().load()) {
+            // load only unloaded saves to avoid overwriting stuff
+            if (!playerLimits.containsKey(playerBlockPlacementLimit.getPlayerUUID())) {
+                playerLimits.put(playerBlockPlacementLimit.getPlayerUUID(), playerBlockPlacementLimit);
+            }
+        }
     }
 
     private PlayerBlockPlacementLimit loadPlayerLimit(OfflinePlayer player) {
