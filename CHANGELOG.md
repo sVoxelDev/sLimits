@@ -1,3 +1,15 @@
+# [1.4.0](https://github.com/Silthus/sLimits/compare/v1.3.0...v1.4.0) (2020-05-16)
+
+
+### Bug Fixes
+
+* **limits:** subtract blocks from limit destroyed by other players ([4b305f3](https://github.com/Silthus/sLimits/commit/4b305f3ddcc6ae5bee93945c2f3caf98dce4437e)), closes [#6](https://github.com/Silthus/sLimits/issues/6)
+
+
+### Features
+
+* **gui:** color grade material name based on placed block amount ([b487b8e](https://github.com/Silthus/sLimits/commit/b487b8e3c7e1ca34b8764065d00e39fa80c959a6))
+
 # [1.3.0](https://github.com/Silthus/sLimits/compare/v1.2.1...v1.3.0) (2020-05-15)
 
 
