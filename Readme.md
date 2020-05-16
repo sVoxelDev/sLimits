@@ -102,8 +102,8 @@ Take the following examples:
 
 | Config File | Permission |
 | ----------- | ---------- |
-| `limits/my-limit.yaml` | `slimits.limits.my-limit` |
-| `limits/subfolder/sub-sub-dir/my-limit.yaml` | `slimits.limits.subfolder.sub-sub-dir.my-limit`
+| `limits/my-limit.yaml` | `slimits.limit.my-limit` |
+| `limits/subfolder/sub-sub-dir/my-limit.yaml` | `slimits.limit.subfolder.sub-sub-dir.my-limit`
 
 ### Admin Permissions
 
