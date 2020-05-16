@@ -12,7 +12,6 @@ import org.bukkit.Material;
 import org.bukkit.command.CommandException;
 import org.bukkit.entity.Player;
 
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 

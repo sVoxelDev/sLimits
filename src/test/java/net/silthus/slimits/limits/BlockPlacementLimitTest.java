@@ -3,7 +3,6 @@ package net.silthus.slimits.limits;
 import be.seeseemelk.mockbukkit.MockBukkit;
 import be.seeseemelk.mockbukkit.ServerMock;
 import be.seeseemelk.mockbukkit.entity.PlayerMock;
-import com.google.common.collect.Maps;
 import net.silthus.slimits.Constants;
 import net.silthus.slimits.LimitsManager;
 import net.silthus.slimits.LimitsPlugin;
@@ -15,8 +14,6 @@ import org.junit.jupiter.api.*;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
