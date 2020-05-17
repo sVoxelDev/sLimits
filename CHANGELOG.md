@@ -1,3 +1,15 @@
+# [1.5.0](https://github.com/Silthus/sLimits/compare/v1.4.0...v1.5.0) (2020-05-17)
+
+
+### Bug Fixes
+
+* **core:** save data fails to load before world loads ([78977b2](https://github.com/Silthus/sLimits/commit/78977b24946c4d1431fa07e075818d5d214c1a50))
+
+
+### Features
+
+* **version:** target Minecraft 1.13 for backwards compatibility ([ed4a28e](https://github.com/Silthus/sLimits/commit/ed4a28eb87d6d12ecd4a2cb7ded9341a3df3c154))
+
 # [1.4.0](https://github.com/Silthus/sLimits/compare/v1.3.0...v1.4.0) (2020-05-16)
 
 
