@@ -41,7 +41,10 @@ public class LimitsPlugin extends BasePlugin implements Listener {
         this.commandManager = new PaperCommandManager(this);
 
         this.commandManager.registerCommand(new LimitsCommand(getLimitsManager(), getGui()));
+    }
 
+    @Override
+    public void loadDependencyConfigs() {
         load();
     }
 
