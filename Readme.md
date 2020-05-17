@@ -1,16 +1,16 @@
+# sLimits
+
 [![Build Status](https://github.com/Silthus/sLimits/workflows/Build/badge.svg)](../../actions?query=workflow%3ABuild)
 [![GitHub release (latest SemVer including pre-releases)](https://img.shields.io/github/v/release/Silthus/sLimits?include_prereleases&label=release)](../../releases)
+![Spiget tested server versions](https://img.shields.io/spiget/tested-versions/78922)
+[![Spiget Downloads](https://img.shields.io/spiget/downloads/78922)](https://www.spigotmc.org/resources/slimits.78922/)
+[![Spiget Rating](https://img.shields.io/spiget/rating/78922)](https://www.spigotmc.org/resources/slimits.78922/)
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 
-# sLimits
-
-> This project is part of a pay what you want open source initiative.
->
-> [Find out more on the Spigot forums!](https://www.spigotmc.org/threads/open-small-to-medium-plugin-development-pay-what-you-want-8-years-experience-high-quality.435578/)
+[![sLimits Splash Screen](docs/img/slimits_splash_small.png)](https://www.spigotmc.org/resources/slimits.78922/)
 
 - [Features](#features)
-  - [Supported Versions](#supported-versions)
 - [Installation](#installation)
 - [Configuration](#configuration)
   - [Limit Modes](#limit-modes)
@@ -22,7 +22,7 @@
 
 ## Features
 
-The plugin currently supports the following features. Please [open a feature request](https://github.com/Silthus/sLimits/issues/new?assignees=&labels=&template=feature_request.md&title=) if you want a feature added.
+The plugin currently has the following features. Please [open a feature request](https://github.com/Silthus/sLimits/issues/new?assignees=&labels=&template=feature_request.md&title=) if you want a feature added.
 
 - **Limiting block placement** based on configs inside `limits/`.
 - Keeps **track** of the **placed blocks** and destroying them decreases the limit counter.
@@ -30,12 +30,7 @@ The plugin currently supports the following features. Please [open a feature req
 - **Unique permissions** per limit config. Only if a player has that permission the limits of the config are checked.
 - **Combine multiple configs** with different modes: `ADD`, `SUBTRACT` and `ABSOLUTE`.
 - **Chest UI** to show your limits and placed block locations.
-
-### Supported Versions
-
-| Spigot | Support |
-| ------- | :-----: |
-| >=1.15.2  |   ✔  |
+- **Block destruction** of your limited blocks by other players.
 
 ## Installation
 
