@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/Silthus/sLimits/compare/v1.5.0...v1.6.0) (2020-06-25)
+
+
+### Features
+
+* update to spigot/minecraft 1.16.1 ([076ec53](https://github.com/Silthus/sLimits/commit/076ec53782143a4b09d6a5224b884bfe9a37fba8))
+
 # [1.5.0](https://github.com/Silthus/sLimits/compare/v1.4.0...v1.5.0) (2020-05-17)
 
 
