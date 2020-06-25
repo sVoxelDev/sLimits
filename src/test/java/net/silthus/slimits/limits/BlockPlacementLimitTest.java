@@ -3,9 +3,7 @@ package net.silthus.slimits.limits;
 import be.seeseemelk.mockbukkit.MockBukkit;
 import be.seeseemelk.mockbukkit.ServerMock;
 import be.seeseemelk.mockbukkit.entity.PlayerMock;
-import net.silthus.slimits.Constants;
-import net.silthus.slimits.LimitsManager;
-import net.silthus.slimits.LimitsPlugin;
+import net.silthus.slimits.*;
 import org.apache.commons.lang.math.RandomUtils;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -16,6 +14,8 @@ import java.io.File;
 import java.nio.file.Path;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @DisplayName("block placement limit")
 class BlockPlacementLimitTest {
@@ -30,8 +30,7 @@ class BlockPlacementLimitTest {
     public static void setUp() {
         server = MockBukkit.mock();
         plugin = MockBukkit.loadWith(LimitsPlugin.class, new File("src/test/resources/plugin.yml"));
-        limitsManager = new LimitsManager(plugin);
-        limitsManager.initializeStorage();
+        limitsManager = mock(LimitsManager.class);
     }
 
     @AfterAll

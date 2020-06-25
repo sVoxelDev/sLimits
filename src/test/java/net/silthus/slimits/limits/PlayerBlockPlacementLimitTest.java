@@ -5,6 +5,7 @@ import be.seeseemelk.mockbukkit.ServerMock;
 import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import lombok.Getter;
 import lombok.SneakyThrows;
+import net.silthus.slimits.LimitMode;
 import net.silthus.slimits.LimitsPlugin;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.math.RandomUtils;
@@ -46,6 +47,12 @@ public class PlayerBlockPlacementLimitTest {
         player = server.addPlayer();
 
         playerLimit = new PlayerBlockPlacementLimit(player);
+    }
+
+    @AfterEach
+    public void afterEach() {
+        server.setPlayers(0);
+        playerLimit = null;
     }
 
     @Test
@@ -181,5 +188,64 @@ public class PlayerBlockPlacementLimitTest {
         assertThat(world).isNotNull();
 
         return world.getBlockAt(RandomUtils.nextInt(256), RandomUtils.nextInt(128), RandomUtils.nextInt(256));
+    }
+
+    @Nested
+    @DisplayName("config modes")
+    public class ConfigModes {
+
+        private final BlockPlacementLimitConfig CONFIG1 = new BlockPlacementLimitConfig(
+                new File("src/test/resources/", "absolute_config1.yaml").toPath());
+        private final BlockPlacementLimitConfig CONFIG2 = new BlockPlacementLimitConfig(
+                new File("src/test/resources/", "absolute_config2.yaml").toPath());
+
+        @BeforeEach
+        public void beforeEach() {
+            CONFIG1.load();
+            CONFIG2.load();
+        }
+
+        @Test
+        @DisplayName("ABSOLUTE: should only apply one absolute config")
+        public void shouldDiscardMultipleAbsoluteConfigs() {
+
+            assertThat(getPlayerLimit().getLimits()).isEmpty();
+
+            getPlayerLimit().registerLimitConfig(CONFIG1);
+
+            assertThat(playerLimit.getLimits())
+                    .hasSize(2)
+                    .containsEntry(Material.BEDROCK, 5)
+                    .containsEntry(Material.DIRT, 2);
+
+            getPlayerLimit().registerLimitConfig(CONFIG2);
+
+            assertThat(playerLimit.getLimits())
+                    .hasSize(2)
+                    .containsEntry(Material.BEDROCK, 10)
+                    .containsEntry(Material.DIRT, 10);
+        }
+
+        @Test
+        @DisplayName("ADD: should add up multiple configs")
+        public void shouldAddMultipleConfigLimits() {
+
+            CONFIG1.setMode(LimitMode.ADD);
+            CONFIG2.setMode(LimitMode.ADD);
+
+            assertThat(getPlayerLimit().getLimits()).isEmpty();
+
+            getPlayerLimit().registerLimitConfig(CONFIG1);
+            getPlayerLimit().registerLimitConfig(CONFIG2);
+
+            assertThat(getPlayerLimit().getLimits())
+                    .hasSize(2)
+                    .containsEntry(Material.DIRT, 12)
+                    .containsEntry(Material.BEDROCK, 15);
+        }
+
+        public void afterEach() {
+
+        }
     }
 }
