@@ -1,0 +1,4 @@
+mode: ABSOLUTE
+blocks:
+  BEDROCK: 10
+  DIRT: 10

@@ -36,7 +36,7 @@ public class LimitsPlugin extends BasePlugin implements Listener {
 
         PLUGIN_PATH = getDataFolder().getAbsolutePath();
 
-        this.limitsManager = new LimitsManager(this);
+        this.limitsManager = new LimitsManager(this, new LimitsConfig(new File(getDataFolder(), "config.yaml").toPath()));
         this.gui = new LimitsGUI(this, limitsManager);
         this.commandManager = new PaperCommandManager(this);
 

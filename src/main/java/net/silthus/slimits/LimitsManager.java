@@ -1,6 +1,8 @@
 package net.silthus.slimits;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
 import net.silthus.slib.config.ConfigUtil;
 import net.silthus.slimits.api.LimitsStorage;
 import net.silthus.slimits.limits.BlockPlacementLimit;
@@ -31,9 +33,9 @@ public class LimitsManager implements Listener {
 
     private LimitsStorage storage;
 
-    public LimitsManager(LimitsPlugin plugin) {
+    public LimitsManager(LimitsPlugin plugin, LimitsConfig config) {
         this.plugin = plugin;
-        this.pluginConfig = new LimitsConfig(new File(plugin.getDataFolder(), "config.yaml").toPath());
+        this.pluginConfig = config;
         this.blockPlacementLimit = new BlockPlacementLimit(this);
     }
 
@@ -74,9 +76,11 @@ public class LimitsManager implements Listener {
         getPlugin().unregisterEvents(this);
         getPlugin().unregisterEvents(getBlockPlacementLimit());
 
-        getStorage().store(getPlayerLimits().values().toArray(new PlayerBlockPlacementLimit[0]));
-        getPlayerLimits().clear();
+        if (getStorage() != null) {
+            getStorage().store(getPlayerLimits().values().toArray(new PlayerBlockPlacementLimit[0]));
+        }
 
+        getPlayerLimits().clear();
         getLimitConfigs().clear();
     }
 

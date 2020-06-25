@@ -49,10 +49,12 @@ public class BlockPlacementLimitConfig extends BukkitYamlConfiguration {
 
     public BlockPlacementLimitConfig(Path path, BukkitYamlProperties properties) {
         super(path, properties);
+        setIdentifier(path.getFileName().toString().replace(".yml", "").replace(".yaml", ""));
     }
 
     public BlockPlacementLimitConfig(Path path) {
         super(path);
+        setIdentifier(path.getFileName().toString().replace(".yml", "").replace(".yaml", ""));
     }
 
     public String getPermission() {
