@@ -1,6 +1,6 @@
 package net.silthus.slimits.config;
 
-import de.exlll.configlib.Converter;
+import net.silthus.slib.configlib.Converter;
 import net.silthus.slib.util.EnumUtils;
 import net.silthus.slimits.LimitMode;
 

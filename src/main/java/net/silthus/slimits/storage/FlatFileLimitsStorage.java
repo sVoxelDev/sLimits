@@ -1,9 +1,9 @@
 package net.silthus.slimits.storage;
 
-import de.exlll.configlib.configs.yaml.BukkitYamlConfiguration;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import net.silthus.slib.configlib.configs.yaml.BukkitYamlConfiguration;
 import net.silthus.slimits.LimitsManager;
 import net.silthus.slimits.api.LimitsStorage;
 import net.silthus.slimits.limits.PlayerBlockPlacementLimit;

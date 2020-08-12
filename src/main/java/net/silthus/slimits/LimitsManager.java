@@ -1,8 +1,6 @@
 package net.silthus.slimits;
 
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.Setter;
 import net.silthus.slib.config.ConfigUtil;
 import net.silthus.slimits.api.LimitsStorage;
 import net.silthus.slimits.limits.BlockPlacementLimit;
@@ -10,7 +8,6 @@ import net.silthus.slimits.limits.BlockPlacementLimitConfig;
 import net.silthus.slimits.limits.PlayerBlockPlacementLimit;
 import net.silthus.slimits.storage.FlatFileLimitsStorage;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;

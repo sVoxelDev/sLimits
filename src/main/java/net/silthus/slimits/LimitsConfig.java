@@ -1,12 +1,11 @@
 package net.silthus.slimits;
 
-import de.exlll.configlib.annotation.Comment;
-import de.exlll.configlib.annotation.ConfigurationElement;
-import de.exlll.configlib.configs.yaml.BukkitYamlConfiguration;
-import de.exlll.configlib.format.FieldNameFormatter;
-import de.exlll.configlib.format.FieldNameFormatters;
 import lombok.Getter;
 import lombok.Setter;
+import net.silthus.slib.configlib.annotation.Comment;
+import net.silthus.slib.configlib.annotation.ConfigurationElement;
+import net.silthus.slib.configlib.configs.yaml.BukkitYamlConfiguration;
+import net.silthus.slib.configlib.format.FieldNameFormatters;
 
 import java.nio.file.Path;
 

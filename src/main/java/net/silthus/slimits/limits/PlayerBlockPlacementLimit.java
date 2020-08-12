@@ -1,13 +1,13 @@
 package net.silthus.slimits.limits;
 
-import de.exlll.configlib.annotation.ConfigurationElement;
-import de.exlll.configlib.annotation.Convert;
-import de.exlll.configlib.annotation.Ignore;
 import lombok.Getter;
 import lombok.Setter;
 import net.silthus.slib.config.converter.MaterialMapConverter;
 import net.silthus.slib.config.converter.MaterialMapLocationListConverter;
 import net.silthus.slib.config.converter.UUIDConverter;
+import net.silthus.slib.configlib.annotation.ConfigurationElement;
+import net.silthus.slib.configlib.annotation.Convert;
+import net.silthus.slib.configlib.annotation.Ignore;
 import net.silthus.slimits.Constants;
 import net.silthus.slimits.LimitMode;
 import org.bukkit.Location;
@@ -16,7 +16,14 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 
 @Getter
 @Setter

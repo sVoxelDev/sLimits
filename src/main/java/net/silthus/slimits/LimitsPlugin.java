@@ -1,7 +1,7 @@
 package net.silthus.slimits;
 
 import co.aikar.commands.PaperCommandManager;
-import kr.entree.spigradle.Plugin;
+import kr.entree.spigradle.annotations.Plugin;
 import lombok.Getter;
 import net.silthus.slib.bukkit.BasePlugin;
 import net.silthus.slimits.commands.LimitsCommand;
@@ -41,20 +41,8 @@ public class LimitsPlugin extends BasePlugin implements Listener {
         this.commandManager = new PaperCommandManager(this);
 
         this.commandManager.registerCommand(new LimitsCommand(getLimitsManager(), getGui()));
-    }
 
-    @Override
-    public void loadDependencyConfigs() {
-        load();
-    }
-
-    public void load() {
         getLimitsManager().load();
-    }
-
-    @Override
-    public void reload() {
-        getLimitsManager().reload();
     }
 
     @Override

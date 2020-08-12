@@ -1,13 +1,13 @@
 package net.silthus.slimits.limits;
 
 import com.google.common.base.Strings;
-import de.exlll.configlib.annotation.Comment;
-import de.exlll.configlib.annotation.Convert;
-import de.exlll.configlib.annotation.NoConvert;
-import de.exlll.configlib.configs.yaml.BukkitYamlConfiguration;
 import lombok.Getter;
 import lombok.Setter;
 import net.silthus.slib.config.converter.MaterialMapConverter;
+import net.silthus.slib.configlib.annotation.Comment;
+import net.silthus.slib.configlib.annotation.Convert;
+import net.silthus.slib.configlib.annotation.NoConvert;
+import net.silthus.slib.configlib.configs.yaml.BukkitYamlConfiguration;
 import net.silthus.slimits.Constants;
 import net.silthus.slimits.LimitMode;
 import org.bukkit.Material;
@@ -47,7 +47,7 @@ public class BlockPlacementLimitConfig extends BukkitYamlConfiguration {
     @Convert(MaterialMapConverter.class)
     private Map<Material, Integer> blocks = new HashMap<>();
 
-    public BlockPlacementLimitConfig(Path path, BukkitYamlProperties properties) {
+    public BlockPlacementLimitConfig(Path path, BukkitYamlConfiguration.BukkitYamlProperties properties) {
         super(path, properties);
         setIdentifier(path.getFileName().toString().replace(".yml", "").replace(".yaml", ""));
     }
