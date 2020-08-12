@@ -7,6 +7,7 @@ import net.silthus.slimits.limits.BlockPlacementLimit;
 import net.silthus.slimits.limits.BlockPlacementLimitConfig;
 import net.silthus.slimits.limits.PlayerBlockPlacementLimit;
 import net.silthus.slimits.storage.FlatFileLimitsStorage;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
@@ -34,6 +35,10 @@ public class LimitsManager implements Listener {
         this.plugin = plugin;
         this.pluginConfig = config;
         this.blockPlacementLimit = new BlockPlacementLimit(this);
+
+        plugin.getMetrics().ifPresent(metrics -> {
+            metrics.addCustomChart(new Metrics.SingleLineChart("loaded_limits", limitConfigs::size));
+        });
     }
 
     public void reload() {

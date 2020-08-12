@@ -76,6 +76,8 @@ repositories {
     //Add your repositories here
     maven { url = "https://repo.aikar.co/content/groups/aikar/" }
     maven { url 'https://jitpack.io' }
+
+    maven { url = 'https://repo.codemc.org/repository/maven-public' }
 }
 
 
@@ -88,6 +90,7 @@ dependencies {
     implementation 'net.silthus:slib:1.5.1'
     implementation 'co.aikar:acf-paper:0.5.0-SNAPSHOT'
     implementation 'com.github.stefvanschie.inventoryframework:IF:0.5.19'
+    implementation 'org.bstats:bstats-bukkit:1.7'
 
     //Test dependencies
     testImplementation 'org.junit.jupiter:junit-jupiter:5.6.2'
@@ -111,12 +114,14 @@ shadowJar {
         include(dependency('co.aikar:acf-paper:'))
         include(dependency('com.github.stefvanschie.inventoryframework:'))
         include(dependency('net.silthus:slib:'))
+        include(dependency('org.bstats::'))
     }
     relocate 'co.aikar.commands', "${packageName}.acf"
     relocate 'co.aikar.locales', "${packageName}.locales"
     relocate 'de.exlll.configlib', "${packageName}.configlib"
     relocate 'com.github.stefvanschie.inventoryframework', "${packageName}.inventoryframework"
     relocate 'net.silthus.slib', "${packageName}.slib"
+    relocate 'org.bstats', "${packageName}.bstats"
 }
 
 tasks.build.dependsOn(shadowJar)
