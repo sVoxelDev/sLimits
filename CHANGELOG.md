@@ -1,3 +1,10 @@
+# [1.7.0](https://github.com/Silthus/sLimits/compare/v1.6.0...v1.7.0) (2020-08-12)
+
+
+### Features
+
+* add bStats ([f892b34](https://github.com/Silthus/sLimits/commit/f892b3469168a9bb7a26ce6f9aea1816e82a79d0))
+
 # [1.6.0](https://github.com/Silthus/sLimits/compare/v1.5.0...v1.6.0) (2020-06-25)
 
 
