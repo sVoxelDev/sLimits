@@ -13,7 +13,9 @@ import net.silthus.slimits.LimitMode;
 import org.bukkit.Material;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Getter
@@ -38,6 +40,12 @@ public class BlockPlacementLimitConfig extends BukkitYamlConfiguration {
             "ABSOLUTE: Only one absolute config per block type and player is applied. This type of config applies the absolute values and irgnores all other config types."
     })
     private LimitMode mode = LimitMode.ADD;
+
+    @Comment({
+            "Here you can limit the limit to a list of worlds.",
+            "The limit is applicable to all worlds if left empty."
+    })
+    private List<String> worlds = new ArrayList<>();
 
     @Comment({
             "Define you block type limits in the form of a map.",

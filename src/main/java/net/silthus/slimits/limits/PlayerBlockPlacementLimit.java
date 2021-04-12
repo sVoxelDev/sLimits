@@ -1,6 +1,6 @@
 package net.silthus.slimits.limits;
 
-import jdk.internal.joptsimple.internal.Strings;
+import com.google.common.base.Strings;
 import lombok.Getter;
 import lombok.Setter;
 import net.silthus.slib.config.converter.MaterialMapConverter;
@@ -11,9 +11,7 @@ import net.silthus.slib.configlib.annotation.Convert;
 import net.silthus.slib.configlib.annotation.Ignore;
 import net.silthus.slimits.Constants;
 import net.silthus.slimits.LimitMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
@@ -45,6 +43,7 @@ public class PlayerBlockPlacementLimit {
     @Ignore
     private Map<Material, Set<String>> blockTypePermissions = new HashMap<>();
     private String permission;
+    private List<UUID> worlds = new ArrayList<>();
 
     public PlayerBlockPlacementLimit(OfflinePlayer player) {
         this.playerUUID = player.getUniqueId();
@@ -81,6 +80,11 @@ public class PlayerBlockPlacementLimit {
 
                 config.getBlocks().forEach((key, value) -> limits.put(key, limits.getOrDefault(key, 0) + value));
                 break;
+        }
+
+        for (String worldName : config.getWorlds()) {
+            World world = Bukkit.getWorld(worldName);
+            if (world != null) worlds.add(world.getUID());
         }
 
         limitConfigs.put(config.getIdentifier(), config.getMode());
@@ -173,8 +177,12 @@ public class PlayerBlockPlacementLimit {
                 .getOrDefault(block.getType(), new HashSet<>()).stream()
                 .anyMatch(player::hasPermission);
         boolean isExcluded = player.hasPermission(Constants.PERMISSION_EXCLUDE_FROM_LIMITS);
+        boolean isApplicableWorld = worlds.isEmpty() || worlds.contains(player.getWorld().getUID());
 
-        return !hasGeneralPermission || (!isLimitedBlock || !hasPermission) || isExcluded;
+        return !hasGeneralPermission
+                || !isApplicableWorld
+                || (!isLimitedBlock || !hasPermission)
+                || isExcluded;
     }
 
     public boolean hasReachedLimit(Material blockType) {
