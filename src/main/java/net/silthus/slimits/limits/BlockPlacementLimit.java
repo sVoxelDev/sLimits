@@ -32,7 +32,7 @@ public class BlockPlacementLimit implements Listener {
 
         PlayerBlockPlacementLimit playerLimit = getLimitsManager().getPlayerLimit(event.getPlayer());
 
-        if (!playerLimit.isApplicable(event.getPlayer(), event.getBlock())) return;
+        if (playerLimit.notApplicable(event.getPlayer(), event.getBlock())) return;
 
         Material blockType = event.getBlock().getType();
         if (playerLimit.hasReachedLimit(blockType)) {
@@ -52,7 +52,7 @@ public class BlockPlacementLimit implements Listener {
 
         PlayerBlockPlacementLimit playerLimit = getLimitsManager().getPlayerLimit(event.getPlayer());
 
-        if (!playerLimit.isApplicable(event.getPlayer(), event.getBlock())) return;
+        if (playerLimit.notApplicable(event.getPlayer(), event.getBlock())) return;
 
         playerLimit.getLimit(event.getBlock().getType()).ifPresent(limit -> {
             Block block = event.getBlock();
@@ -100,7 +100,7 @@ public class BlockPlacementLimit implements Listener {
 
         PlayerBlockPlacementLimit playerLimit = getLimitsManager().getPlayerLimit(event.getPlayer());
 
-        if (!playerLimit.isApplicable(event.getPlayer(), event.getBlock())) return;
+        if (playerLimit.notApplicable(event.getPlayer(), event.getBlock())) return;
 
         if (!playerLimit.hasPlacedBlock(event.getBlock())) return;
 

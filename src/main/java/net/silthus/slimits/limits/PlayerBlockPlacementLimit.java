@@ -1,5 +1,6 @@
 package net.silthus.slimits.limits;
 
+import jdk.internal.joptsimple.internal.Strings;
 import lombok.Getter;
 import lombok.Setter;
 import net.silthus.slib.config.converter.MaterialMapConverter;
@@ -43,6 +44,7 @@ public class PlayerBlockPlacementLimit {
     private Map<Material, List<Location>> blockLocations = new HashMap<>();
     @Ignore
     private Map<Material, Set<String>> blockTypePermissions = new HashMap<>();
+    private String permission;
 
     public PlayerBlockPlacementLimit(OfflinePlayer player) {
         this.playerUUID = player.getUniqueId();
@@ -163,15 +165,16 @@ public class PlayerBlockPlacementLimit {
         return count;
     }
 
-    public boolean isApplicable(Player player, Block block) {
+    public boolean notApplicable(Player player, Block block) {
 
+        boolean hasGeneralPermission = Strings.isNullOrEmpty(permission) || player.hasPermission(permission);
         boolean isLimitedBlock = getLimits().containsKey(block.getType());
         boolean hasPermission = getBlockTypePermissions()
                 .getOrDefault(block.getType(), new HashSet<>()).stream()
                 .anyMatch(player::hasPermission);
         boolean isExcluded = player.hasPermission(Constants.PERMISSION_EXCLUDE_FROM_LIMITS);
 
-        return (isLimitedBlock && hasPermission) && !isExcluded;
+        return !hasGeneralPermission || (!isLimitedBlock || !hasPermission) || isExcluded;
     }
 
     public boolean hasReachedLimit(Material blockType) {
@@ -182,6 +185,7 @@ public class PlayerBlockPlacementLimit {
     }
 
     private void addPermissions(BlockPlacementLimitConfig config) {
+        permission = config.getPermission();
         for (Material material : config.getBlocks().keySet()) {
             if (!blockTypePermissions.containsKey(material)) {
                 blockTypePermissions.put(material, new HashSet<>());

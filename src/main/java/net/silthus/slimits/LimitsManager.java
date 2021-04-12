@@ -144,13 +144,9 @@ public class LimitsManager implements Listener {
     private PlayerBlockPlacementLimit loadPlayerLimit(OfflinePlayer player) {
 
         PlayerBlockPlacementLimit playerLimit = getStorage().load(player);
-        Player onlinePlayer = Bukkit.getPlayer(player.getUniqueId());
 
-        if (onlinePlayer != null && onlinePlayer.isOnline()) {
-            getLimitConfigs().values().stream()
-                    .filter(config -> onlinePlayer.hasPermission(config.getPermission()))
-                    .forEach(playerLimit::registerLimitConfig);
-        }
+        getLimitConfigs().values()
+                .forEach(playerLimit::registerLimitConfig);
 
         return playerLimit;
     }
