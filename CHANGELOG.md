@@ -1,3 +1,15 @@
+# [1.8.0](https://github.com/Silthus/sLimits/compare/v1.7.0...v1.8.0) (2021-04-12)
+
+
+### Bug Fixes
+
+* limited blocks from offline players not reduced if broken ([3864fc0](https://github.com/Silthus/sLimits/commit/3864fc03fc0e7aa512a113a87526a924bfc57627))
+
+
+### Features
+
+* add option to only limit block placement in certain worlds ([1fba6b3](https://github.com/Silthus/sLimits/commit/1fba6b330d13f0662c3eec2895780c656527bd6f)), closes [#16](https://github.com/Silthus/sLimits/issues/16)
+
 # [1.7.0](https://github.com/Silthus/sLimits/compare/v1.6.0...v1.7.0) (2020-08-12)
 
 
