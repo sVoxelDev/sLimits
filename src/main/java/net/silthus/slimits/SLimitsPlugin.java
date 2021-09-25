@@ -1,9 +1,7 @@
 package net.silthus.slimits;
 
 import kr.entree.spigradle.annotations.PluginMain;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
+import lombok.Getter;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
@@ -11,23 +9,25 @@ import org.bukkit.plugin.java.JavaPluginLoader;
 import java.io.File;
 
 @PluginMain
-public class SLimitsPlugin extends JavaPlugin implements Listener {
+public class SLimitsPlugin extends JavaPlugin {
 
-  public SLimitsPlugin() {}
+    @Getter
+    private LimitsService limitsService;
 
-  public SLimitsPlugin(
-      JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) {
-    super(loader, description, dataFolder, file);
-  }
+    public SLimitsPlugin() {
+    }
 
-  @Override
-  public void onEnable() {
+    public SLimitsPlugin(
+            JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) {
+        super(loader, description, dataFolder, file);
+    }
 
-    getServer().getPluginManager().registerEvents(this, this);
-  }
+    @Override
+    public void onEnable() {
 
-  @EventHandler
-  public void onPlayerJoin(PlayerJoinEvent event) {
-    getLogger().info("Player joined.");
-  }
+        saveDefaultConfig();
+
+        this.limitsService = new LimitsService(this);
+        limitsService.loadLimits(LimitsConfig.loadFromFile(getConfig()));
+    }
 }

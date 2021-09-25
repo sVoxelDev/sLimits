@@ -1,0 +1,4 @@
+limits:
+  block_placement:
+    - type: stone
+      limit: 10

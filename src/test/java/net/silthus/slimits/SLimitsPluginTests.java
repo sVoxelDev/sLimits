@@ -1,34 +1,19 @@
 package net.silthus.slimits;
 
-import be.seeseemelk.mockbukkit.MockBukkit;
-import be.seeseemelk.mockbukkit.ServerMock;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import net.silthus.slimits.testing.TestBase;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
+import static org.assertj.core.api.Assertions.assertThat;
 
-public class SLimitsPluginTests {
+public class SLimitsPluginTests extends TestBase {
 
-  private ServerMock server;
+    @Test
+    void onEnable_loadsLimitsFromConfig() {
 
-  @BeforeEach
-  public void setUp() {
-    server = MockBukkit.mock();
-    MockBukkit.loadWith(SLimitsPlugin.class, new File("build/resources/test/plugin.yml"));
-  }
-
-  @Test
-  public void shouldFirePlayerJoinEvent() {
-
-    server.addPlayer();
-
-    server.getPluginManager().assertEventFired(PlayerJoinEvent.class);
-  }
-
-  @AfterEach
-  public void tearDown() {
-    MockBukkit.unmock();
-  }
+        assertThat(plugin.getLimitsService())
+                .isNotNull()
+                .extracting(LimitsService::getLimits)
+                .asList()
+                .isNotEmpty();
+    }
 }
