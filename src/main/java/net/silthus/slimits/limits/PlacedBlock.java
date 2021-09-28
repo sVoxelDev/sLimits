@@ -1,4 +1,4 @@
-package net.silthus.slimits;
+package net.silthus.slimits.limits;
 
 import lombok.*;
 import org.bukkit.Bukkit;
@@ -116,6 +116,7 @@ public class PlacedBlock implements ConfigurationSerializable {
     }
 
     @Override
+    @NonNull
     public Map<String, Object> serialize() {
         return Map.of(
                 "type", getType().getKey().toString(),

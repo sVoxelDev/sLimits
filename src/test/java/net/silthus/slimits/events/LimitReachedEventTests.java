@@ -1,6 +1,8 @@
-package net.silthus.slimits;
+package net.silthus.slimits.events;
 
 import lombok.Value;
+import net.silthus.slimits.limits.BlockPlacementLimit;
+import net.silthus.slimits.limits.LimitType;
 import net.silthus.slimits.testing.TestBase;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;

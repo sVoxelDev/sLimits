@@ -1,7 +1,9 @@
-package net.silthus.slimits;
+package net.silthus.slimits.limits;
 
 import lombok.Getter;
 import lombok.NonNull;
+import net.silthus.slimits.config.BlockPlacementLimitConfig;
+import net.silthus.slimits.events.LimitReachedEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;

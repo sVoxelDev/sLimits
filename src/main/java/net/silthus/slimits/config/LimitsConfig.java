@@ -1,7 +1,8 @@
-package net.silthus.slimits;
+package net.silthus.slimits.config;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import net.silthus.slimits.limits.LimitType;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 

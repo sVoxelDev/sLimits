@@ -1,5 +1,6 @@
 package net.silthus.slimits;
 
+import net.silthus.slimits.config.LimitsConfig;
 import net.silthus.slimits.testing.TestBase;
 import org.junit.jupiter.api.Test;
 

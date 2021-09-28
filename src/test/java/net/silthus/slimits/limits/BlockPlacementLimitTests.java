@@ -1,7 +1,8 @@
-package net.silthus.slimits;
+package net.silthus.slimits.limits;
 
 import be.seeseemelk.mockbukkit.block.BlockMock;
 import be.seeseemelk.mockbukkit.entity.PlayerMock;
+import net.silthus.slimits.config.BlockPlacementLimitConfig;
 import net.silthus.slimits.testing.TestBase;
 import org.bukkit.Material;
 import org.bukkit.configuration.InvalidConfigurationException;

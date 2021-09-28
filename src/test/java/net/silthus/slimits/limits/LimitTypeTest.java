@@ -1,4 +1,4 @@
-package net.silthus.slimits;
+package net.silthus.slimits.limits;
 
 import org.junit.jupiter.api.Test;
 

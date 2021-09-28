@@ -1,8 +1,9 @@
-package net.silthus.slimits;
+package net.silthus.slimits.config;
 
 import com.google.common.base.Strings;
 import lombok.Data;
 import lombok.NonNull;
+import net.silthus.slimits.limits.LimitType;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 

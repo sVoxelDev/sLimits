@@ -1,4 +1,4 @@
-package net.silthus.slimits;
+package net.silthus.slimits.limits;
 
 import be.seeseemelk.mockbukkit.WorldMock;
 import be.seeseemelk.mockbukkit.block.BlockMock;
@@ -233,7 +233,7 @@ public class PlacedBlockTests extends TestBase {
                 .isNotNull()
                 .isAssignableFrom(PlacedBlock.class);
 
-        assertThat(ConfigurationSerialization.getClassByAlias("net.silthus.slimits.PlacedBlock"))
+        assertThat(ConfigurationSerialization.getClassByAlias("net.silthus.slimits.limits.PlacedBlock"))
                 .isNotNull()
                 .isAssignableFrom(PlacedBlock.class);
     }

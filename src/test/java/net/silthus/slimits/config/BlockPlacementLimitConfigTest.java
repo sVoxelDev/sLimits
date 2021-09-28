@@ -1,4 +1,4 @@
-package net.silthus.slimits;
+package net.silthus.slimits.config;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.MemoryConfiguration;

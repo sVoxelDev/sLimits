@@ -1,4 +1,4 @@
-package net.silthus.slimits;
+package net.silthus.slimits.config;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

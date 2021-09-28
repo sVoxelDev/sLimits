@@ -4,6 +4,8 @@ import kr.entree.spigradle.annotations.PluginMain;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import net.silthus.slimits.config.LimitsConfig;
+import net.silthus.slimits.limits.PlacedBlock;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;

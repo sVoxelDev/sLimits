@@ -1,6 +1,8 @@
 package net.silthus.slimits;
 
 import lombok.Getter;
+import net.silthus.slimits.config.LimitsConfig;
+import net.silthus.slimits.limits.BlockPlacementLimit;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;

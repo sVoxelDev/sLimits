@@ -1,6 +1,7 @@
-package net.silthus.slimits;
+package net.silthus.slimits.limits;
 
 import lombok.Getter;
+import net.silthus.slimits.SLimitsPlugin;
 
 public enum LimitType {
 

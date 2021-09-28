@@ -1,4 +1,4 @@
-package net.silthus.slimits;
+package net.silthus.slimits.config;
 
 import net.silthus.slimits.testing.TestBase;
 import org.bukkit.Material;
