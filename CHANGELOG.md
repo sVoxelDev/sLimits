@@ -1,3 +1,10 @@
+# [2.0.0-beta.2](https://github.com/Silthus/sLimits/compare/v2.0.0-beta.1...v2.0.0-beta.2) (2021-09-28)
+
+
+### Bug Fixes
+
+* **release:** cleanup CHANGELOG.md ([3ffc09a](https://github.com/Silthus/sLimits/commit/3ffc09a86595ee6254f27d028719a74c685f255a))
+
 # [4.1.0](https://github.com/Silthus/spigot-plugin-template/compare/v4.0.0...v4.1.0) (2021-09-21)
 
 
