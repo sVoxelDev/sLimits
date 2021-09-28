@@ -1,0 +1,7 @@
+storage:
+  placed_blocks: placed_blocks.yml
+limits:
+  block_placement:
+    bedrocks:
+      type: minecraft:bedrock
+      limit: 20

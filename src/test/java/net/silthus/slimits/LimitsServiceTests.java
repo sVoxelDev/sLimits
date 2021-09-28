@@ -1,14 +1,19 @@
 package net.silthus.slimits;
 
 import net.silthus.slimits.testing.TestBase;
+import org.bukkit.Material;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.plugin.RegisteredListener;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -39,9 +44,9 @@ public class LimitsServiceTests extends TestBase {
 
         loadConfiguredLimits();
 
-        assertThat(service.getBlockPlacementCounter())
+        assertThat(service.getBlockPlacementLimits())
                 .isNotNull()
-                .hasSize(1);
+                .hasSize(2);
     }
 
     @Test
@@ -49,11 +54,11 @@ public class LimitsServiceTests extends TestBase {
 
         loadConfiguredLimits();
 
-        assertThat(service.getBlockPlacementCounter())
-                .hasSize(1);
+        assertThat(service.getBlockPlacementLimits())
+                .hasSize(2);
 
         service.loadLimits(new LimitsConfig());
-        assertThat(service.getBlockPlacementCounter())
+        assertThat(service.getBlockPlacementLimits())
                 .isEmpty();
     }
 
@@ -68,10 +73,54 @@ public class LimitsServiceTests extends TestBase {
                 .collect(Collectors.toList());
 
         assertThat(registeredListeners)
-                .containsAll(service.getBlockPlacementCounter());
+                .containsAll(service.getBlockPlacementLimits());
+    }
+
+    @Test
+    void loadLimits_loadsStoredBlocksFromDisk(@TempDir File temp) throws IOException {
+
+        plugin.getLimitsConfig().getStorage().setBlockPlacement(temp.getAbsolutePath());
+
+        BlockPlacementLimit limit = new BlockPlacementLimit("stones", Material.STONE, 5, "test");
+        server.getPluginManager().registerEvents(limit, plugin);
+        player.addAttachment(plugin, limit.getPermission(), true);
+        placeBlocks(Material.STONE, 5);
+        limit.save(temp);
+
+        service.loadLimits(plugin.getLimitsConfig());
+
+        Optional<BlockPlacementLimit> stones = service.getBlockPlacementLimits()
+                .stream().filter(blockPlacementLimit -> blockPlacementLimit.getKey().equals("stones"))
+                .findFirst();
+        assertThat(stones)
+                .isPresent().get()
+                .extracting(BlockPlacementLimit::getPlacedBlocks)
+                .asList()
+                .hasSize(5);
+    }
+
+    @Test
+    void save_storesLimits_toDisk(@TempDir File temp) {
+
+        loadConfiguredLimits();
+        placeBlocks(Material.STONE, 2);
+
+        plugin.getLimitsConfig().getStorage().setBlockPlacement(temp.getAbsolutePath());
+
+        service.saveLimits();
+
+        assertThat(temp.list())
+                .containsExactly(
+                        "bedrock.yml",
+                        "stones.yml"
+                );
     }
 
     private void loadConfiguredLimits() {
-        service.loadLimits(new LimitsConfig().load(plugin.getConfig()));
+
+        service.loadLimits(plugin.getLimitsConfig());
+        for (BlockPlacementLimit limit : service.getBlockPlacementLimits()) {
+            player.addAttachment(plugin, limit.getPermission(), true);
+        }
     }
 }

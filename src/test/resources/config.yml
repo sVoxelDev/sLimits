@@ -1,4 +1,10 @@
+storage:
+  block_placement: storage/block_placement/
 limits:
   block_placement:
-    - type: stone
+    stones:
+      type: stone
       limit: 10
+    bedrock:
+      type: bedrock
+      limit: 5

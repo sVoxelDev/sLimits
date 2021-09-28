@@ -1,0 +1,19 @@
+placed_blocks:
+  - ==: PlacedBlock
+    type: stone
+    x: 1
+    y: 2
+    z: 3
+    owner: Silthus
+    ownerId: 4fcdfd06-f620-40fc-827c-4dbf514c904a
+    world: world
+    worldId: 0e06e315-fdf7-483a-a139-eb2f48be2841
+  - ==: PlacedBlock
+    type: bedrock
+    x: 3
+    y: 2
+    z: 1
+    owner: Silthus
+    ownerId: 4fcdfd06-f620-40fc-827c-4dbf514c904a
+    world: world
+    worldId: 0e06e315-fdf7-483a-a139-eb2f48be2841

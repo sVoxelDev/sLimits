@@ -7,11 +7,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.permissions.PermissionAttachment;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -21,6 +20,7 @@ class LimitReachedEventTests extends TestBase {
     private BlockPlacementLimit limit;
     private LimitEventListener listener;
     private ArgumentCaptor<LimitReachedEvent> eventCaptor;
+    private PermissionAttachment permission;
 
     @BeforeEach
     public void setUp() {
@@ -28,11 +28,13 @@ class LimitReachedEventTests extends TestBase {
 
         eventCaptor = ArgumentCaptor.forClass(LimitReachedEvent.class);
 
-        limit = new BlockPlacementLimit(Material.STONE, 3);
+        limit = new BlockPlacementLimit(Material.STONE, 3, "test");
         server.getPluginManager().registerEvents(limit, plugin);
 
         listener = spy(new LimitEventListener());
         server.getPluginManager().registerEvents(listener, plugin);
+
+        permission = player.addAttachment(plugin, limit.getPermission(), true);
     }
 
     @Test
@@ -114,6 +116,28 @@ class LimitReachedEventTests extends TestBase {
     void placeBlock_doesNotFireEvent_closeToLimit() {
 
         placeBlocks(Material.STONE, 3);
+
+        verify(listener, never())
+                .onLimitReached(any());
+    }
+
+    @Test
+    void placeBlock_doesNotFireEvent_ifWrongTypeIsPlaced() {
+
+        placeBlocks(Material.BEDROCK, 5);
+
+        verify(listener, never())
+                .onLimitReached(any());
+    }
+
+    @Test
+    void event_onlyFires_ifPlayerHasThePermission() {
+
+        player.removeAttachment(permission);
+        assertThat(player.hasPermission(limit.getPermission()))
+                .isFalse();
+
+        placeBlocks(Material.STONE, 4);
 
         verify(listener, never())
                 .onLimitReached(any());

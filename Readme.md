@@ -10,15 +10,6 @@
 
 [![sLimits Splash Screen](assets/slimits_splash_small.png)](https://www.spigotmc.org/resources/slimits.78922/)
 
-- [Features](#features)
-- [Installation](#installation)
-- [Configuration](#configuration)
-    - [Limit Modes](#limit-modes)
-- [Commands](#commands)
-    - [Player Commands](#player-commands)
-    - [Admin Commands](#admin-commands)
-- [Permissions](#permissions)
-    - [Admin Permissions](#admin-permissions)
 
 ## Features
 
@@ -26,7 +17,8 @@ The plugin currently has the following features. Please [open a feature request]
 
 - **Limiting block placement** based on limits configured inside `config.yml`.
 - Keeps **track** of the **placed blocks** and destroying them decreases the limit counter.
-- **Block destruction** of your limited blocks by other players.
+- **Blocks destruction** of limited blocks by other players.
+- **Simple flatfile storage.**
 
 ## Installation
 
@@ -34,11 +26,35 @@ Simply drop the plugin into your `plugins` folder and restart your server.
 
 ## Configuration
 
-There is a main `config.yml` in the plugins directory which holds all of the options.
+There is a main `config.yml` in the plugins directory which holds all the options.
 
 ```yaml
 limits:
   block_placement:
-    - type: stone
+    # permission: slimits.limits.block_placement.stones
+    stones:
+      type: stone
       limit: 10
+    # permission: slimits.limits.block_placement.bedrocks-10
+    bedrocks-10:
+      type: bedrock
+      limit: 10
+    # permission: slimits.limits.block_placement.bedrocks-20
+    bedrocks-20:
+      type: bedrock
+      limit: 20
+```
+
+## Permissions
+
+The players require the limit's permission for it to be applied. The permission is created from the limit's key: `slimits.limits.block_placement.<limit_key>`. The permission can be customized by setting it in the limit's config.
+
+```yaml
+limits:
+  block_placement:
+    # permission: my-super-permission
+    stones:
+      type: stone
+      limit: 10
+      permission: my-super-permission
 ```
