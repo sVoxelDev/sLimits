@@ -1,3 +1,16 @@
+# 1.0.0-beta.1 (2021-09-28)
+
+
+### Features
+
+* add flat file storage and permissions ([5c81bda](https://github.com/Silthus/sLimits/commit/5c81bda1dfbde4e0daf40dd00b2e4a118d57d0ab))
+* completely recode sLimits with TDD ([a235343](https://github.com/Silthus/sLimits/commit/a235343f5cf0a89a4a74ffd91b61a4551e3ca571))
+
+
+### BREAKING CHANGES
+
+* limits are now directly configured inside the config.yml. See the [README](Readme.md) for more details.
+
 # [4.1.0](https://github.com/Silthus/spigot-plugin-template/compare/v4.0.0...v4.1.0) (2021-09-21)
 
 
