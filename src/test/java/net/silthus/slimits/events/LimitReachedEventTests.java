@@ -3,7 +3,7 @@ package net.silthus.slimits.events;
 import lombok.Value;
 import net.silthus.slimits.limits.BlockPlacementLimit;
 import net.silthus.slimits.limits.LimitType;
-import net.silthus.slimits.testing.TestBase;
+import net.silthus.slimits.TestBase;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;

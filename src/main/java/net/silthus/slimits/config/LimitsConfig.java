@@ -9,7 +9,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
@@ -45,12 +44,7 @@ public class LimitsConfig {
         if (limits == null)
             return;
 
-        String configKey = LimitType.BLOCK_PLACEMENT.getConfigKey();
-
-        if (limits.isList(configKey))
-            this.limits = loadLimitsFromConfigList(limits, configKey);
-        else
-            this.limits = loadLimitsFromKeyedConfig(limits, configKey);
+        this.limits = loadLimitsFromKeyedConfig(limits, LimitType.BLOCK_PLACEMENT.getConfigKey());
     }
 
     private List<BlockPlacementLimitConfig> loadLimitsFromKeyedConfig(ConfigurationSection limits, String configKey) {
@@ -68,11 +62,5 @@ public class LimitsConfig {
         }
 
         return configs;
-    }
-
-    private List<BlockPlacementLimitConfig> loadLimitsFromConfigList(ConfigurationSection limits, String configKey) {
-        return limits.getMapList(configKey).stream()
-                .map(BlockPlacementLimitConfig::new)
-                .collect(Collectors.toList());
     }
 }

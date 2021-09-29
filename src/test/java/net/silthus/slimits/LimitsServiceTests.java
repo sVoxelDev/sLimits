@@ -2,16 +2,13 @@ package net.silthus.slimits;
 
 import net.silthus.slimits.config.LimitsConfig;
 import net.silthus.slimits.limits.BlockPlacementLimit;
-import net.silthus.slimits.testing.TestBase;
 import org.bukkit.Material;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.plugin.RegisteredListener;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;

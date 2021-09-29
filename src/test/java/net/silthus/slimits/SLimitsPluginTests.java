@@ -1,12 +1,13 @@
 package net.silthus.slimits;
 
 import co.aikar.commands.PaperCommandManager;
+import co.aikar.commands.RootCommand;
 import net.silthus.slimits.commands.LimitsCommand;
 import net.silthus.slimits.config.LimitsConfig;
-import net.silthus.slimits.testing.TestBase;
-import org.apache.commons.lang.NotImplementedException;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
+
+import java.io.File;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -31,6 +32,12 @@ public class SLimitsPluginTests extends TestBase {
                 .extracting(LimitsConfig::getLimits)
                 .asList()
                 .isNotEmpty();
+    }
+
+    @Test
+    void onEnable_savesLanguageConfigToDisk() {
+
+        assertThat(new File(plugin.getDataFolder(), "lang_en.yaml").exists()).isTrue();
     }
 
     @Test
@@ -78,6 +85,9 @@ public class SLimitsPluginTests extends TestBase {
 
         assertThat(plugin.getCommandManager().getRegisteredRootCommands()
                 .stream().filter(rootCommand -> rootCommand.getDefCommand() instanceof LimitsCommand).findFirst())
-                .isPresent();
+                .isPresent().get()
+                .extracting(RootCommand::getCommandName)
+                .isEqualTo("slimits");
+        assertThat(plugin.getCommandManager().hasRegisteredCommands()).isTrue();
     }
 }

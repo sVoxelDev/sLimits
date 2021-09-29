@@ -16,7 +16,6 @@ import java.util.UUID;
 
 @Value
 @SerializableAs("PlacedBlock")
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @EqualsAndHashCode(of = {"type", "worldId", "x", "y", "z"})
 public class PlacedBlock implements ConfigurationSerializable {
 

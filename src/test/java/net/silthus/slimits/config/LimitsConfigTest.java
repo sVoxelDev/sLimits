@@ -1,6 +1,6 @@
 package net.silthus.slimits.config;
 
-import net.silthus.slimits.testing.TestBase;
+import net.silthus.slimits.TestBase;
 import org.bukkit.Material;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.MemoryConfiguration;

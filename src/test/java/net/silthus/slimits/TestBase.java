@@ -1,4 +1,4 @@
-package net.silthus.slimits.testing;
+package net.silthus.slimits;
 
 import be.seeseemelk.mockbukkit.MockBukkit;
 import be.seeseemelk.mockbukkit.ServerMock;
@@ -20,6 +20,8 @@ import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
 
+import static org.mockito.Mockito.spy;
+
 public class TestBase {
 
     @TempDir
@@ -32,6 +34,7 @@ public class TestBase {
     public void setUp() {
         server = MockBukkit.mock();
         plugin = MockBukkit.loadWith(SLimitsPlugin.class, new File("build/resources/test/plugin.yml"));
+        plugin.setLimitsService(spy(plugin.getLimitsService()));
 
         player = server.addPlayer();
 
