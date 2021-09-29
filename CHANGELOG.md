@@ -1,3 +1,10 @@
+# [2.0.0-beta.3](https://github.com/Silthus/sLimits/compare/v2.0.0-beta.2...v2.0.0-beta.3) (2021-09-29)
+
+
+### Features
+
+* **cmd:** add `/slimits reload` command ([6176d5f](https://github.com/Silthus/sLimits/commit/6176d5f101691273e7243be7c0a2a122fc42f2e2))
+
 # [2.0.0-beta.2](https://github.com/Silthus/sLimits/compare/v2.0.0-beta.1...v2.0.0-beta.2) (2021-09-28)
 
 
