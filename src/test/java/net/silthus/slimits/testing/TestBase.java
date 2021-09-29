@@ -16,11 +16,14 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
 
 public class TestBase {
 
+    @TempDir
+    protected File tempDir;
     protected ServerMock server;
     protected PlayerMock player;
     protected SLimitsPlugin plugin;
@@ -31,6 +34,8 @@ public class TestBase {
         plugin = MockBukkit.loadWith(SLimitsPlugin.class, new File("build/resources/test/plugin.yml"));
 
         player = server.addPlayer();
+
+        plugin.getLimitsConfig().getStorage().setBlockPlacement(tempDir.getAbsolutePath());
     }
 
     @AfterEach

@@ -6,6 +6,7 @@ import net.silthus.slimits.limits.BlockPlacementLimit;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.event.HandlerList;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,17 +23,36 @@ public class LimitsService {
         this.plugin = plugin;
     }
 
+    public List<BlockPlacementLimit> getBlockPlacementLimits() {
+        return limits;
+    }
+
+    public void reload() {
+
+        loadLimits(plugin.getLimitsConfig());
+    }
+
     public void loadLimits(LimitsConfig config) {
 
-        limits.clear();
+        unregisterAllLimits();
+
         config.getLimits().stream()
                 .map(BlockPlacementLimit::new)
                 .forEach(this::registerAndLoadLimit);
         plugin.getLogger().info("loaded " + limits.size() + " limits!");
     }
 
-    public List<BlockPlacementLimit> getBlockPlacementLimits() {
-        return limits;
+    public void registerAndLoadLimit(BlockPlacementLimit limit) {
+
+        try {
+            limit.load(getLimitStore(limit));
+
+            Bukkit.getPluginManager().registerEvents(limit, plugin);
+            limits.add(limit);
+        } catch (IOException | InvalidConfigurationException e) {
+            plugin.getLogger().severe("Unable to load limit storage for block_placement limit \"" + limit.getKey() + "\": " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     public void saveLimits() {
@@ -55,24 +75,19 @@ public class LimitsService {
         return storage;
     }
 
-    private void registerAndLoadLimit(BlockPlacementLimit limit) {
-
-        try {
-            limit.load(getLimitStore(limit));
-
-            Bukkit.getPluginManager().registerEvents(limit, plugin);
-            limits.add(limit);
-        } catch (IOException | InvalidConfigurationException e) {
-            plugin.getLogger().severe("Unable to load limit storage for block_placement limit \"" + limit.getKey() + "\": " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
     private YamlConfiguration getLimitStore(BlockPlacementLimit limit) throws IOException, InvalidConfigurationException {
         YamlConfiguration cfg = new YamlConfiguration();
         File file = new File(prepareAndGetStoragePath(), limit.getKey() + ".yml");
-        if (!file.createNewFile())
+        if (file.exists())
             cfg.load(file);
         return cfg;
+    }
+
+    private void unregisterAllLimits() {
+
+        saveLimits();
+
+        limits.forEach(HandlerList::unregisterAll);
+        limits.clear();
     }
 }

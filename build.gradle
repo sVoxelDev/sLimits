@@ -50,6 +50,7 @@ archivesBaseName = project.property("pluginName")
 repositories {
     mavenCentral()
     spigot()
+    maven { url = "https://repo.aikar.co/content/groups/aikar/" }
     maven { url = 'https://jitpack.io' }
 }
 
@@ -57,6 +58,7 @@ dependencies {
     implementation spigot(mcVersion)
 
     //Add dependencies here
+    implementation "co.aikar:acf-paper:0.5.0-SNAPSHOT"
 
     //Test dependencies
     testImplementation 'org.junit.jupiter:junit-jupiter:5.+'
@@ -67,11 +69,11 @@ dependencies {
 
 shadowJar {
     classifier = ''
-//    dependencies {
-//        include(dependency('co.aikar:acf-paper:0.5.0-SNAPSHOT'))
-//    }
-//    relocate 'co.aikar.commands', "${packageName}.acf"
-//    relocate 'co.aikar.locales', "${packageName}.locales"
+    dependencies {
+        include(dependency('co.aikar:acf-paper:0.5.0-SNAPSHOT'))
+    }
+    relocate 'co.aikar.commands', "${packageName}.acf"
+    relocate 'co.aikar.locales', "${packageName}.locales"
 }
 
 tasks.build.dependsOn(shadowJar)

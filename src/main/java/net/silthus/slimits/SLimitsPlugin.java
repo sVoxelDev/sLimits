@@ -1,9 +1,11 @@
 package net.silthus.slimits;
 
+import co.aikar.commands.PaperCommandManager;
 import kr.entree.spigradle.annotations.PluginMain;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import net.silthus.slimits.commands.LimitsCommand;
 import net.silthus.slimits.config.LimitsConfig;
 import net.silthus.slimits.limits.PlacedBlock;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
@@ -23,6 +25,9 @@ public class SLimitsPlugin extends JavaPlugin {
     @Setter(AccessLevel.PACKAGE)
     private LimitsService limitsService;
     @Getter
+    @Setter(AccessLevel.PACKAGE)
+    private PaperCommandManager commandManager;
+    @Getter
     private LimitsConfig limitsConfig = new LimitsConfig();
 
     public SLimitsPlugin() {
@@ -31,6 +36,12 @@ public class SLimitsPlugin extends JavaPlugin {
     public SLimitsPlugin(
             JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) {
         super(loader, description, dataFolder, file);
+    }
+
+    public void reload() {
+
+        reloadConfig();
+        limitsService.reload();
     }
 
     @Override
@@ -43,6 +54,9 @@ public class SLimitsPlugin extends JavaPlugin {
 
         this.limitsService = new LimitsService(this);
         limitsService.loadLimits(limitsConfig);
+
+        this.commandManager = new PaperCommandManager(this);
+        commandManager.registerCommand(new LimitsCommand(this));
     }
 
     @Override

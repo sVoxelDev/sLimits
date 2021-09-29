@@ -69,25 +69,20 @@ public class LimitsServiceTests extends TestBase {
 
         loadConfiguredLimits();
 
-        List<Listener> registeredListeners = Arrays.stream(BlockPlaceEvent.getHandlerList().getRegisteredListeners())
-                .map(RegisteredListener::getListener)
-                .filter(listener -> listener instanceof BlockPlacementLimit)
-                .collect(Collectors.toList());
+        List<Listener> registeredListeners = getBlockPlaceListeners();
 
         assertThat(registeredListeners)
                 .containsAll(service.getBlockPlacementLimits());
     }
 
     @Test
-    void loadLimits_loadsStoredBlocksFromDisk(@TempDir File temp) throws IOException {
-
-        plugin.getLimitsConfig().getStorage().setBlockPlacement(temp.getAbsolutePath());
+    void loadLimits_loadsStoredBlocksFromDisk() throws IOException {
 
         BlockPlacementLimit limit = new BlockPlacementLimit("stones", Material.STONE, 5, "test");
         server.getPluginManager().registerEvents(limit, plugin);
         player.addAttachment(plugin, limit.getPermission(), true);
         placeBlocks(Material.STONE, 5);
-        limit.save(temp);
+        limit.save(tempDir);
 
         service.loadLimits(plugin.getLimitsConfig());
 
@@ -102,17 +97,76 @@ public class LimitsServiceTests extends TestBase {
     }
 
     @Test
-    void save_storesLimits_toDisk(@TempDir File temp) {
+    void loadLimits_unregisterExistingListeners() {
+
+        BlockPlacementLimit limit = new BlockPlacementLimit(Material.DIAMOND_BLOCK, 10);
+        service.registerAndLoadLimit(limit);
+        assertThat(service.getLimits()).hasSize(1);
+        assertThat(getBlockPlaceListeners()).contains(limit);
+
+        service.loadLimits(plugin.getLimitsConfig());
+
+        assertThat(service.getLimits()).hasSize(2);
+        assertThat(service.getLimits()).doesNotContain(limit);
+        assertThat(getBlockPlaceListeners()).doesNotContain(limit);
+    }
+
+    @Test
+    void save_storesLimits_toDisk() {
 
         loadConfiguredLimits();
         placeBlocks(Material.STONE, 2);
 
-        plugin.getLimitsConfig().getStorage().setBlockPlacement(temp.getAbsolutePath());
-
         service.saveLimits();
 
-        assertThat(temp.list())
+        assertThat(tempDir.list())
                 .containsExactly(
+                        "bedrock.yml",
+                        "stones.yml"
+                );
+    }
+
+    @Test
+    void reload_reloadsLimitsFromDisk() {
+
+        assertThat(service.getLimits()).isEmpty();
+
+        service.reload();
+
+        assertThat(service.getLimits())
+                .hasSize(2);
+    }
+
+    @Test
+    void reload_unregistersOldLimits() {
+
+        BlockPlacementLimit limit = new BlockPlacementLimit(Material.IRON_BLOCK, 10);
+        service.registerAndLoadLimit(limit);
+
+        service.reload();
+
+        assertThat(getBlockPlaceListeners()).doesNotContain(limit);
+        assertThat(service.getLimits()).doesNotContain(limit);
+    }
+
+    @Test
+    void reload_savesLimitCacheBeforeReload() {
+
+        loadConfiguredLimits();
+        placeBlocks(Material.STONE, 10);
+        assertThat(service.getLimits().stream().filter(blockPlacementLimit -> blockPlacementLimit.getType() == Material.STONE).findFirst())
+                .isPresent().get()
+                .extracting(BlockPlacementLimit::getPlacedBlocks)
+                .asList().hasSize(10);
+
+        service.reload();
+
+        assertThat(service.getLimits().stream().filter(blockPlacementLimit -> blockPlacementLimit.getType() == Material.STONE).findFirst())
+                .isPresent().get()
+                .extracting(BlockPlacementLimit::getPlacedBlocks)
+                .asList().hasSize(10);
+        assertThat(tempDir.list())
+                .contains(
                         "bedrock.yml",
                         "stones.yml"
                 );
@@ -124,5 +178,12 @@ public class LimitsServiceTests extends TestBase {
         for (BlockPlacementLimit limit : service.getBlockPlacementLimits()) {
             player.addAttachment(plugin, limit.getPermission(), true);
         }
+    }
+
+    private List<Listener> getBlockPlaceListeners() {
+        return Arrays.stream(BlockPlaceEvent.getHandlerList().getRegisteredListeners())
+                .map(RegisteredListener::getListener)
+                .filter(listener -> listener instanceof BlockPlacementLimit)
+                .collect(Collectors.toList());
     }
 }
