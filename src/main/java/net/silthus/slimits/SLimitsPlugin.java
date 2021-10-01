@@ -61,7 +61,7 @@ public class SLimitsPlugin extends JavaPlugin {
         ConfigurationSerialization.registerClass(PlacedBlock.class);
 
         saveDefaultConfig();
-        saveResource("lang_en.yaml", false);
+        saveResource("lang_en.yaml", true);
 
         limitsConfig = LimitsConfig.loadFromFile(getConfig());
     }

@@ -1,2 +1,3 @@
 acf-slimits:
   reload-success: "sLimits successfully reloaded."
+  save-success: "All limits saved successfully."

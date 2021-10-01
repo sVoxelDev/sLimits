@@ -5,6 +5,7 @@ import lombok.NonNull;
 import net.silthus.slimits.config.BlockPlacementLimitConfig;
 import net.silthus.slimits.events.LimitReachedEvent;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
@@ -62,7 +63,7 @@ public class BlockPlacementLimit implements Listener {
     public List<PlacedBlock> getPlacedBlocks(Player player) {
 
         return placedBlocks.stream()
-                .filter(placedBlock -> placedBlock.isOwner(player))
+                .filter(placedBlock -> placedBlock.isOwner(player.getUniqueId()))
                 .collect(Collectors.toList());
     }
 
@@ -78,17 +79,10 @@ public class BlockPlacementLimit implements Listener {
             addPlacedBlock(event.getPlayer(), event.getBlockPlaced());
     }
 
-    private boolean isNotApplicable(BlockPlaceEvent event) {
-
-        boolean playerHasNoPermission = !event.getPlayer().hasPermission(getPermission());
-
-        return isNotSameType(event.getBlock()) || playerHasNoPermission;
-    }
-
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onBlockBreak(BlockBreakEvent event) {
 
-        removePlacedBlock(event.getBlock());
+        removePlacedBlock(event);
     }
 
     @SuppressWarnings("unchecked")
@@ -110,13 +104,26 @@ public class BlockPlacementLimit implements Listener {
         config.save(file);
     }
 
+    private boolean isNotApplicable(BlockPlaceEvent event) {
+
+        boolean playerHasNoPermission = !event.getPlayer().hasPermission(getPermission());
+
+        return isNotSameType(event.getBlock()) || playerHasNoPermission;
+    }
+
     private void fireAndHandleLimitReachedEvent(BlockPlaceEvent event) {
 
         LimitReachedEvent limitReachedEvent = fireLimitReachedEvent(event);
         if (limitReachedEvent.isCancelBlockPlacement())
-            event.setCancelled(true);
+            cancelBlockPlacement(event);
         else
             addPlacedBlock(event.getPlayer(), event.getBlockPlaced());
+    }
+
+    private void cancelBlockPlacement(BlockPlaceEvent event) {
+        event.setCancelled(true);
+        event.getPlayer().sendMessage(ChatColor.RED + "You reached your limit for placing "
+                + getType().getKey().getKey() + ": " + getCount(event.getPlayer()) + "/" + getLimit() + ".");
     }
 
     private LimitReachedEvent fireLimitReachedEvent(BlockPlaceEvent blockPlaceEvent) {
@@ -134,18 +141,27 @@ public class BlockPlacementLimit implements Listener {
             return;
 
         placedBlocks.add(new PlacedBlock(block, player));
+        player.sendMessage(ChatColor.GRAY + "Your limit for placing "
+                + getType().getKey().getKey() + " " + ChatColor.RED + "increased"
+                + ChatColor.GRAY + ": " + getCount(player) + "/" + getLimit() + "."
+        );
     }
 
     private boolean hasReachedLimit(Player player) {
         return getCount(player) >= getLimit();
     }
 
-    private void removePlacedBlock(Block block) {
+    private void removePlacedBlock(BlockBreakEvent event) {
 
-        if (isNotSameType(block))
+        if (isNotSameType(event.getBlock()))
             return;
 
-        placedBlocks.remove(new PlacedBlock(block));
+        if (placedBlocks.remove(new PlacedBlock(event.getBlock()))) {
+            event.getPlayer().sendMessage(ChatColor.GRAY + "Your limit for placing "
+                    + getType().getKey().getKey() + " " + ChatColor.GREEN + "decreased"
+                    + ChatColor.GRAY + ": " + getCount(event.getPlayer()) + "/" + getLimit() + "."
+            );
+        }
     }
 
     private boolean isNotSameType(Block block) {

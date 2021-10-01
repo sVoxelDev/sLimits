@@ -110,7 +110,7 @@ public class PlacedBlockTests extends TestBase {
 
         PlacedBlock placedBlock = createPlacedBlock();
 
-        assertThat(placedBlock.isOwner(player)).isTrue();
+        assertThat(placedBlock.isOwner(player.getUniqueId())).isTrue();
     }
 
     @Test
@@ -118,7 +118,7 @@ public class PlacedBlockTests extends TestBase {
 
         PlacedBlock placedBlock = createPlacedBlock().withOwner(null);
 
-        assertThat(placedBlock.isOwner(player)).isFalse();
+        assertThat(placedBlock.isOwner(player.getUniqueId())).isFalse();
     }
 
     @Test

@@ -2,6 +2,7 @@ package net.silthus.slimits;
 
 import net.silthus.slimits.config.LimitsConfig;
 import net.silthus.slimits.limits.BlockPlacementLimit;
+import net.silthus.slimits.limits.PlacedBlock;
 import org.bukkit.Material;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -9,8 +10,10 @@ import org.bukkit.plugin.RegisteredListener;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -79,7 +82,7 @@ public class LimitsServiceTests extends TestBase {
         server.getPluginManager().registerEvents(limit, plugin);
         player.addAttachment(plugin, limit.getPermission(), true);
         placeBlocks(Material.STONE, 5);
-        limit.save(tempDir);
+        limit.save(storageDir);
 
         service.loadLimits(plugin.getLimitsConfig());
 
@@ -116,7 +119,7 @@ public class LimitsServiceTests extends TestBase {
 
         service.saveLimits();
 
-        assertThat(tempDir.list())
+        assertThat(storageDir.list())
                 .containsExactly(
                         "bedrock.yml",
                         "stones.yml"
@@ -151,22 +154,30 @@ public class LimitsServiceTests extends TestBase {
 
         loadConfiguredLimits();
         placeBlocks(Material.STONE, 10);
-        assertThat(service.getLimits().stream().filter(blockPlacementLimit -> blockPlacementLimit.getType() == Material.STONE).findFirst())
-                .isPresent().get()
-                .extracting(BlockPlacementLimit::getPlacedBlocks)
-                .asList().hasSize(10);
+        assertThat(getPlacedBlocks(Material.STONE))
+                .hasSize(10);
 
         service.reload();
 
-        assertThat(service.getLimits().stream().filter(blockPlacementLimit -> blockPlacementLimit.getType() == Material.STONE).findFirst())
-                .isPresent().get()
-                .extracting(BlockPlacementLimit::getPlacedBlocks)
-                .asList().hasSize(10);
-        assertThat(tempDir.list())
+        assertThat(getPlacedBlocks(Material.STONE))
+                .hasSize(10);
+        assertThat(storageDir.list())
                 .contains(
                         "bedrock.yml",
                         "stones.yml"
                 );
+    }
+
+    @Test
+    void reload_limitCountForPlayerIsSameAfterReload() {
+
+        loadConfiguredLimits();
+        placeBlocks(Material.STONE, 10);
+        assertThat(getLimit(Material.STONE).getCount(player)).isEqualTo(10);
+
+        service.reload();
+
+        assertThat(getLimit(Material.STONE).getCount(player)).isEqualTo(10);
     }
 
     private void loadConfiguredLimits() {
@@ -182,5 +193,17 @@ public class LimitsServiceTests extends TestBase {
                 .map(RegisteredListener::getListener)
                 .filter(listener -> listener instanceof BlockPlacementLimit)
                 .collect(Collectors.toList());
+    }
+
+    private BlockPlacementLimit getLimit(Material type) {
+
+        return service.getLimits().stream()
+                .filter(blockPlacementLimit -> blockPlacementLimit.getType() == type)
+                .findFirst().orElseThrow();
+    }
+
+    private List<PlacedBlock> getPlacedBlocks(Material type) {
+
+        return getLimit(type).getPlacedBlocks();
     }
 }

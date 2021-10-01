@@ -4,6 +4,7 @@ import be.seeseemelk.mockbukkit.block.BlockMock;
 import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import net.silthus.slimits.config.BlockPlacementLimitConfig;
 import net.silthus.slimits.TestBase;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -277,6 +278,42 @@ public class BlockPlacementLimitTests extends TestBase {
         assertThat(limit.getPlacedBlocks())
                 .hasSize(1)
                 .allMatch(placedBlock -> placedBlock.getType() == Material.STONE);
+    }
+
+    @Test
+    void blockPlace_isCancelled_ifLimitIsReached() {
+
+        for (int i = 0; i < 100; i++) {
+            limit.getPlacedBlocks().add(new PlacedBlock(createBlock(Material.STONE, i, i, i), player));
+        }
+        BlockPlaceEvent blockPlaceEvent = createBlockPlaceEvent(createBlock(Material.STONE, -1, -2, -3));
+        callEvent(blockPlaceEvent);
+
+        assertThat(blockPlaceEvent.isCancelled()).isTrue();
+        assertThat(player.nextMessage())
+                .isEqualTo(ChatColor.RED + "You reached your limit for placing stone: 100/100.");
+    }
+
+    @Test
+    void blockPlace_sendsMessageIfLimitIsIncreased() {
+
+        placeBlock(Material.STONE, 1, 2, 3);
+
+        assertThat(player.nextMessage())
+                .isEqualTo(ChatColor.GRAY + "Your limit for placing stone "
+                        + ChatColor.RED + "increased" + ChatColor.GRAY + ": 1/100.");
+    }
+
+    @Test
+    void blockBreak_sendsMessageIfLimitIsDecreased() {
+
+        limit.getPlacedBlocks().add(new PlacedBlock(createBlock(Material.STONE, 1, 2, 3), player));
+
+        breakBlock(Material.STONE, 1, 2, 3);
+
+        assertThat(player.nextMessage())
+                .isEqualTo(ChatColor.GRAY + "Your limit for placing stone "
+                        + ChatColor.GREEN + "decreased" + ChatColor.GRAY + ": 0/100.");
     }
 
     private YamlConfiguration getPlacedBlocksFileStore() throws IOException, InvalidConfigurationException {

@@ -1,0 +1,7 @@
+storage:
+  block_placement: storage/block_placement/
+limits:
+  block_placement:
+    bedrock:
+      type: bedrock
+      limit: 5

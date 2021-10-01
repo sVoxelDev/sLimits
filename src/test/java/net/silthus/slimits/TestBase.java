@@ -24,21 +24,19 @@ import static org.mockito.Mockito.spy;
 
 public class TestBase {
 
-    @TempDir
-    protected File tempDir;
     protected ServerMock server;
     protected PlayerMock player;
     protected SLimitsPlugin plugin;
+    protected File storageDir;
 
     @BeforeEach
     public void setUp() {
         server = MockBukkit.mock();
         plugin = MockBukkit.loadWith(SLimitsPlugin.class, new File("build/resources/test/plugin.yml"));
         plugin.setLimitsService(spy(plugin.getLimitsService()));
+        storageDir = new File(plugin.getDataFolder(), plugin.getLimitsConfig().getStorage().getBlockPlacement());
 
         player = server.addPlayer();
-
-        plugin.getLimitsConfig().getStorage().setBlockPlacement(tempDir.getAbsolutePath());
     }
 
     @AfterEach

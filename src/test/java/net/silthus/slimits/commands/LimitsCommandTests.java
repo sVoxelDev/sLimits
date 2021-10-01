@@ -18,6 +18,7 @@ public class LimitsCommandTests extends TestBase {
     public void setUp() {
         super.setUp();
 
+        player.setOp(true);
         command = prepareLimitsCommand();
     }
 
@@ -39,6 +40,15 @@ public class LimitsCommandTests extends TestBase {
 
         verify(command.getPlugin(), times(1)).reload();
         assertThat(player.nextMessage()).contains("sLimits successfully reloaded.");
+    }
+
+    @Test
+    void save() {
+
+        performCommand("slimits save");
+
+        verify(command.getPlugin().getLimitsService()).saveLimits();
+        assertThat(player.nextMessage()).contains("All limits saved successfully.");
     }
 
     private void performCommand(String command) {

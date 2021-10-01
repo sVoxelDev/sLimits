@@ -35,7 +35,6 @@ public class PlacedBlock implements ConfigurationSerializable {
 
     int z;
     UUID ownerId;
-
     String owner;
 
     public PlacedBlock(@NonNull Material material, @NonNull Location location, OfflinePlayer owner) {
@@ -102,8 +101,8 @@ public class PlacedBlock implements ConfigurationSerializable {
         return Optional.ofNullable(Bukkit.getPlayer(getOwnerId()));
     }
 
-    public boolean isOwner(Player player) {
-        return player != null && getOwnerId() == player.getUniqueId();
+    public boolean isOwner(UUID playerId) {
+        return playerId != null && playerId.equals(getOwnerId());
     }
 
     public boolean isBlock(Block block) {
