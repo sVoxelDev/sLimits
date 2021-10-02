@@ -1,3 +1,10 @@
+# [2.0.0-beta.7](https://github.com/Silthus/sLimits/compare/v2.0.0-beta.6...v2.0.0-beta.7) (2021-10-02)
+
+
+### Features
+
+* **storage:** add repeating task to save placed blocks ([be91600](https://github.com/Silthus/sLimits/commit/be9160088502985c2032e640ac9cd8f0e891e28d))
+
 # [2.0.0-beta.6](https://github.com/Silthus/sLimits/compare/v2.0.0-beta.5...v2.0.0-beta.6) (2021-10-02)
 
 
