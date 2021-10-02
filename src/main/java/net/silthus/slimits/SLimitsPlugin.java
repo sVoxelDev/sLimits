@@ -8,6 +8,7 @@ import lombok.Setter;
 import net.silthus.slimits.commands.LimitsCommand;
 import net.silthus.slimits.config.LimitsConfig;
 import net.silthus.slimits.limits.PlacedBlock;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -71,6 +72,7 @@ public class SLimitsPlugin extends JavaPlugin {
 
         this.limitsService = new LimitsService(this);
         limitsService.loadLimits(limitsConfig);
+        Bukkit.getPluginManager().registerEvents(limitsService, this);
     }
 
     private void setupCommands() {

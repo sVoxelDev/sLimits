@@ -2,23 +2,29 @@ package net.silthus.slimits;
 
 import lombok.Getter;
 import net.silthus.slimits.config.LimitsConfig;
+import net.silthus.slimits.events.LimitReachedEvent;
 import net.silthus.slimits.limits.BlockPlacementLimit;
 import net.silthus.slimits.limits.PlayerLimit;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
+import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class LimitsService {
+public class LimitsService implements Listener {
 
     private final SLimitsPlugin plugin;
 
@@ -60,7 +66,7 @@ public class LimitsService {
 
         File storagePath = prepareAndGetStoragePath();
 
-        for (BlockPlacementLimit limit : getBlockPlacementLimits()) {
+        for (BlockPlacementLimit limit : getLimits()) {
             try {
                 limit.save(storagePath);
             } catch (IOException e) {
@@ -69,8 +75,10 @@ public class LimitsService {
         }
     }
 
-    public List<BlockPlacementLimit> getBlockPlacementLimits() {
-        return limits;
+    public List<BlockPlacementLimit> getBlockPlacementLimits(Material type) {
+        return getLimits().stream()
+                .filter(limit -> limit.getType() == type)
+                .collect(Collectors.toList());
     }
 
     public List<PlayerLimit> getPlayerLimits(OfflinePlayer player) {
@@ -93,6 +101,21 @@ public class LimitsService {
             plugin.getLogger().severe("Unable to load limit storage for block_placement limit \"" + limit.getKey() + "\": " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onLimitReached(LimitReachedEvent event) {
+
+        Optional<BlockPlacementLimit> highestLimit = getHighestBlockPlacementLimit(event.getType(), event.getPlayer());
+        if (highestLimit.map(limit -> !limit.getPermission().equals(event.getPermission())).orElse(false)) {
+            event.setCancelled(true);
+        }
+    }
+
+    private Optional<BlockPlacementLimit> getHighestBlockPlacementLimit(Material type, Player player) {
+        return getBlockPlacementLimits(type)
+                .stream().filter(limit -> limit.hasPermission(player))
+                .max(Comparator.comparingInt(BlockPlacementLimit::getLimit));
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")

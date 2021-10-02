@@ -46,7 +46,7 @@ public class LimitsServiceTests extends TestBase {
 
         loadConfiguredLimits();
 
-        assertThat(service.getBlockPlacementLimits())
+        assertThat(service.getLimits())
                 .isNotNull()
                 .hasSize(2);
     }
@@ -56,11 +56,11 @@ public class LimitsServiceTests extends TestBase {
 
         loadConfiguredLimits();
 
-        assertThat(service.getBlockPlacementLimits())
+        assertThat(service.getLimits())
                 .hasSize(2);
 
         service.loadLimits(new LimitsConfig());
-        assertThat(service.getBlockPlacementLimits())
+        assertThat(service.getLimits())
                 .isEmpty();
     }
 
@@ -72,7 +72,7 @@ public class LimitsServiceTests extends TestBase {
         List<Listener> registeredListeners = getBlockPlaceListeners();
 
         assertThat(registeredListeners)
-                .containsAll(service.getBlockPlacementLimits());
+                .containsAll(service.getLimits());
     }
 
     @Test
@@ -86,7 +86,7 @@ public class LimitsServiceTests extends TestBase {
 
         service.loadLimits(plugin.getLimitsConfig());
 
-        Optional<BlockPlacementLimit> stones = service.getBlockPlacementLimits()
+        Optional<BlockPlacementLimit> stones = service.getLimits()
                 .stream().filter(blockPlacementLimit -> blockPlacementLimit.getKey().equals("stones"))
                 .findFirst();
         assertThat(stones)
@@ -234,7 +234,7 @@ public class LimitsServiceTests extends TestBase {
     protected void loadConfiguredLimits() {
 
         service.loadLimits(plugin.getLimitsConfig());
-        for (BlockPlacementLimit limit : service.getBlockPlacementLimits()) {
+        for (BlockPlacementLimit limit : service.getLimits()) {
             player.addAttachment(plugin, limit.getPermission(), true);
         }
     }

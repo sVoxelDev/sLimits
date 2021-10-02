@@ -92,7 +92,7 @@ public class TestBase {
     protected void loadConfiguredLimits() {
 
         plugin.getLimitsService().loadLimits(plugin.getLimitsConfig());
-        for (BlockPlacementLimit limit : plugin.getLimitsService().getBlockPlacementLimits()) {
+        for (BlockPlacementLimit limit : plugin.getLimitsService().getLimits()) {
             player.addAttachment(plugin, limit.getPermission(), true);
         }
     }

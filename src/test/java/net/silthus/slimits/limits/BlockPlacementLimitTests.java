@@ -371,6 +371,18 @@ public class BlockPlacementLimitTests extends TestBase {
         assertThat(limit.getCount(player)).isOne();
     }
 
+    @Test
+    void multipleLimitsOfTheSameType_ignoresLowerLimits() {
+
+        BlockPlacementLimit limit = new BlockPlacementLimit(Material.STONE, 150, "foo");
+        player.addAttachment(plugin, limit.getPermission(), true);
+        plugin.getLimitsService().registerAndLoadLimit(limit);
+
+        placeBlocks(Material.STONE, 120);
+
+        assertThat(limit.getCount(player)).isEqualTo(120);
+    }
+
     private YamlConfiguration getPlacedBlocksFileStore() throws IOException, InvalidConfigurationException {
 
         File blockStore = new File("src/test/resources", "placed_blocks.yml");

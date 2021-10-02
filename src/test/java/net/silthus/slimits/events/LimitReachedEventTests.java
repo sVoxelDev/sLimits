@@ -59,7 +59,7 @@ class LimitReachedEventTests extends TestBase {
         LimitReachedEvent event = triggerLimitReachedEvent();
 
         assertThat(event)
-                .extracting(LimitReachedEvent::getType)
+                .extracting(LimitReachedEvent::getLimitType)
                 .isEqualTo(LimitType.BLOCK_PLACEMENT);
     }
 

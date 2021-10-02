@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import net.silthus.slimits.SLimitsPlugin;
 import net.silthus.slimits.config.BlockPlacementLimitConfig;
+import net.silthus.slimits.events.IncreaseLimitEvent;
 import net.silthus.slimits.events.LimitReachedEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -129,7 +130,7 @@ public class BlockPlacementLimit implements Listener {
     private void fireAndHandleLimitReachedEvent(BlockPlaceEvent event) {
 
         LimitReachedEvent limitReachedEvent = fireLimitReachedEvent(event);
-        if (limitReachedEvent.isCancelBlockPlacement())
+        if (!limitReachedEvent.isCancelled() && limitReachedEvent.isCancelBlockPlacement())
             cancelBlockPlacement(event);
         else
             addPlacedBlock(event.getPlayer(), event.getBlockPlaced());
@@ -138,7 +139,7 @@ public class BlockPlacementLimit implements Listener {
     private LimitReachedEvent fireLimitReachedEvent(BlockPlaceEvent blockPlaceEvent) {
 
         Player player = blockPlaceEvent.getPlayer();
-        LimitReachedEvent event = new LimitReachedEvent(player, getLimit(), getCount(player));
+        LimitReachedEvent event = new LimitReachedEvent(player, type, getLimit(), getCount(player), getPermission());
         Bukkit.getPluginManager().callEvent(event);
 
         return event;
@@ -148,6 +149,9 @@ public class BlockPlacementLimit implements Listener {
 
         if (isNotSameType(block))
             return;
+
+        IncreaseLimitEvent event = new IncreaseLimitEvent();
+        Bukkit.getPluginManager().callEvent(event);
 
         placedBlocks.add(new PlacedBlock(block, player));
         player.sendMessage(ChatColor.GRAY + "Your limit for placing "
