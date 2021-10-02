@@ -1,3 +1,10 @@
+# [2.0.0-beta.6](https://github.com/Silthus/sLimits/compare/v2.0.0-beta.5...v2.0.0-beta.6) (2021-10-02)
+
+
+### Features
+
+* **limits:** add config option to deny block breaking of limited blocks placed by others ([746d6ef](https://github.com/Silthus/sLimits/commit/746d6eff1ae578f0685b8a656d9c0a4be19cdf89))
+
 # [2.0.0-beta.5](https://github.com/Silthus/sLimits/compare/v2.0.0-beta.4...v2.0.0-beta.5) (2021-10-02)
 
 
