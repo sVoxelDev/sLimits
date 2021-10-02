@@ -119,7 +119,7 @@ public class LimitsServiceTests extends TestBase {
         service.saveLimits();
 
         assertThat(storageDir.list())
-                .containsExactly(
+                .containsOnly(
                         "bedrock.yml",
                         "stones.yml"
                 );
