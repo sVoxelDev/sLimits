@@ -1,3 +1,11 @@
+# [2.0.0-beta.5](https://github.com/Silthus/sLimits/compare/v2.0.0-beta.4...v2.0.0-beta.5) (2021-10-02)
+
+
+### Features
+
+* **cmd:** add /limits list <player> command to show the limits of other online players ([42a4af9](https://github.com/Silthus/sLimits/commit/42a4af9e1bf460319ccfc75d63a1ddc3559b7152))
+* **limits:** add `slimits.limits.ignore` permission to ignore all limits ([ebb1684](https://github.com/Silthus/sLimits/commit/ebb1684ce370297aaef02917d6cb5564bb5f3916))
+
 # [2.0.0-beta.4](https://github.com/Silthus/sLimits/compare/v2.0.0-beta.3...v2.0.0-beta.4) (2021-10-02)
 
 
