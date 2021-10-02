@@ -1,8 +1,10 @@
 package net.silthus.slimits.commands;
 
+import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import co.aikar.commands.BaseCommand;
 import net.silthus.slimits.TestBase;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -64,6 +66,44 @@ public class LimitsCommandTests extends TestBase {
                 .contains("  - stone: 0/10");
         assertThat(player.nextMessage())
                 .contains("  - bedrock: 0/5");
+    }
+
+    @Test
+    void list_withNoLimits_showsDifferentMessage() {
+
+        PlayerMock player = server.addPlayer();
+        player.performCommand("slimits list");
+
+        assertThat(player.nextMessage())
+                .contains(ChatColor.GREEN + "You have no limits.");
+    }
+
+    @Test
+    void list_canListOtherPlayerLimits() {
+
+        PlayerMock admin = server.addPlayer();
+        admin.setOp(true);
+        placeBlocks(Material.STONE, 5);
+
+        assertThat(admin.performCommand("slimits list " + player.getName())).isTrue();
+
+        assertThat(admin.nextMessage())
+                .contains(ChatColor.AQUA + player.getName()
+                        + ChatColor.GOLD + " has the following block placement limits:");
+        assertThat(admin.nextMessage())
+                .contains("  - stone: 5/10");
+        assertThat(admin.nextMessage())
+                .contains("  - bedrock: 0/5");
+    }
+
+    @Test
+    void list_onlyPlayerWithPermissionCanListOtherLimits() {
+
+        PlayerMock admin = server.addPlayer();
+
+        assertThat(admin.performCommand("slimits list " + player.getName())).isTrue();
+        assertThat(admin.nextMessage())
+                .isEqualTo(ChatColor.RED + "I'm sorry, but you do not have permission to perform this command.");
     }
 
     private void performCommand(String command) {

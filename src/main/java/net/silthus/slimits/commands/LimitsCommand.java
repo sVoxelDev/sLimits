@@ -1,10 +1,10 @@
 package net.silthus.slimits.commands;
 
 import co.aikar.commands.BaseCommand;
-import co.aikar.commands.annotation.CommandAlias;
-import co.aikar.commands.annotation.CommandPermission;
-import co.aikar.commands.annotation.Default;
-import co.aikar.commands.annotation.Subcommand;
+import co.aikar.commands.InvalidCommandArgument;
+import co.aikar.commands.MessageKeys;
+import co.aikar.commands.MessageType;
+import co.aikar.commands.annotation.*;
 import co.aikar.locales.MessageKey;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -31,15 +31,32 @@ public class LimitsCommand extends BaseCommand {
         this.plugin = plugin;
     }
 
-    @Subcommand("list")
     @Default
-    public void list(Player player) {
+    @Subcommand("list")
+    @CommandCompletion("@players")
+    public void list(@Flags("other,defaultself") @Optional Player player) {
 
-        info("list-header");
+        boolean isNotSamePlayer = !player.equals(getCurrentCommandIssuer().getIssuer());
+        if (isNotSamePlayer && !getCurrentCommandIssuer().hasPermission("slimits.admin.list")) {
+            getCurrentCommandIssuer().sendMessage(MessageType.ERROR, MessageKeys.PERMISSION_DENIED_PARAMETER, new String[]{"{param}", "player"});
+            throw new InvalidCommandArgument(false);
+        }
+
         List<PlayerLimit> limits = plugin.getLimitsService().getPlayerLimits(player);
-        for (PlayerLimit limit : limits) {
-            getCurrentCommandIssuer().sendMessage(ChatColor.GOLD + "  - "
-                    + limit.getType().getKey().getKey() + ": " + limit.getCount() + "/" + limit.getLimit());
+        if (limits.isEmpty()) {
+            info("list-no-limits");
+        } else {
+            if (isNotSamePlayer)
+                info("list-header-other-player",
+                        "{player}", player.getName()
+                );
+            else
+                info("list-header");
+
+            for (PlayerLimit limit : limits) {
+                getCurrentCommandIssuer().sendMessage(ChatColor.GOLD + "  - "
+                        + limit.getType().getKey().getKey() + ": " + limit.getCount() + "/" + limit.getLimit());
+            }
         }
     }
 

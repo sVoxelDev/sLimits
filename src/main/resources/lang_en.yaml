@@ -2,3 +2,5 @@ acf-slimits:
   reload-success: "sLimits successfully reloaded. Loaded {limits} limits."
   save-success: "All limits saved successfully."
   list-header: "&6You have the following block placement limits:"
+  list-header-other-player: "&b{player}&6 has the following block placement limits:"
+  list-no-limits: "&aYou have no limits."
