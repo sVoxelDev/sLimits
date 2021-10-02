@@ -39,7 +39,7 @@ public class LimitsCommandTests extends TestBase {
         performCommand("slimits reload");
 
         verify(command.getPlugin(), times(1)).reload();
-        assertThat(player.nextMessage()).contains("sLimits successfully reloaded.");
+        assertThat(player.nextMessage()).contains("sLimits successfully reloaded. Loaded 2 limits.");
     }
 
     @Test

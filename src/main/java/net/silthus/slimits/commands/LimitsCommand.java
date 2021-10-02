@@ -31,7 +31,9 @@ public class LimitsCommand extends BaseCommand {
     public void reload() {
 
         plugin.reload();
-        info("reload-success");
+        info("reload-success",
+                "{limits}", String.valueOf(plugin.getLimitsService().getLimits().size())
+        );
     }
 
     @Subcommand("save")
