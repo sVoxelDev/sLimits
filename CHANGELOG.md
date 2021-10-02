@@ -1,3 +1,10 @@
+# [2.0.0-beta.8](https://github.com/Silthus/sLimits/compare/v2.0.0-beta.7...v2.0.0-beta.8) (2021-10-02)
+
+
+### Features
+
+* **limits:** allow duplicate limits to overwrite each other ([7ed5a60](https://github.com/Silthus/sLimits/commit/7ed5a60b513b02db7472805d6cba382aab001490))
+
 # [2.0.0-beta.7](https://github.com/Silthus/sLimits/compare/v2.0.0-beta.6...v2.0.0-beta.7) (2021-10-02)
 
 
