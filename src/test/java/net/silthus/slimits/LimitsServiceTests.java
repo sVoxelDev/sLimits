@@ -190,6 +190,15 @@ public class LimitsServiceTests extends TestBase {
                 .hasSize(2);
     }
 
+    @Override
+    protected void loadConfiguredLimits() {
+
+        service.loadLimits(plugin.getLimitsConfig());
+        for (BlockPlacementLimit limit : service.getBlockPlacementLimits()) {
+            player.addAttachment(plugin, limit.getPermission(), true);
+        }
+    }
+
     private List<Listener> getBlockPlaceListeners() {
         return Arrays.stream(BlockPlaceEvent.getHandlerList().getRegisteredListeners())
                 .map(RegisteredListener::getListener)
