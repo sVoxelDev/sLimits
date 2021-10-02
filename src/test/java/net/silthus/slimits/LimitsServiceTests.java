@@ -3,18 +3,16 @@ package net.silthus.slimits;
 import net.silthus.slimits.config.LimitsConfig;
 import net.silthus.slimits.limits.BlockPlacementLimit;
 import net.silthus.slimits.limits.PlacedBlock;
+import net.silthus.slimits.limits.PlayerLimit;
 import org.bukkit.Material;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.plugin.RegisteredListener;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -113,15 +111,14 @@ public class LimitsServiceTests extends TestBase {
     }
 
     @Test
-    void save_storesLimits_toDisk(@TempDir File temp) {
+    void save_storesLimits_toDisk() {
 
-        plugin.getLimitsConfig().getStorage().setBlockPlacement(temp.getAbsolutePath());
         loadConfiguredLimits();
         placeBlocks(Material.STONE, 2);
 
         service.saveLimits();
 
-        assertThat(temp.list())
+        assertThat(storageDir.list())
                 .containsExactly(
                         "bedrock.yml",
                         "stones.yml"
@@ -182,12 +179,15 @@ public class LimitsServiceTests extends TestBase {
         assertThat(getLimit(Material.STONE).getCount(player)).isEqualTo(10);
     }
 
-    private void loadConfiguredLimits() {
+    @Test
+    void getPlayerLimits_returnsThePlayersLimits() {
 
-        service.loadLimits(plugin.getLimitsConfig());
-        for (BlockPlacementLimit limit : service.getBlockPlacementLimits()) {
-            player.addAttachment(plugin, limit.getPermission(), true);
-        }
+        loadConfiguredLimits();
+
+        List<PlayerLimit> limits = service.getPlayerLimits(player);
+        assertThat(limits)
+                .isNotNull()
+                .hasSize(2);
     }
 
     private List<Listener> getBlockPlaceListeners() {

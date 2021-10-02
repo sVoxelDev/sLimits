@@ -6,6 +6,7 @@ import be.seeseemelk.mockbukkit.block.BlockMock;
 import be.seeseemelk.mockbukkit.block.state.BlockStateMock;
 import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import net.silthus.slimits.SLimitsPlugin;
+import net.silthus.slimits.limits.BlockPlacementLimit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -82,5 +83,13 @@ public class TestBase {
 
     protected BlockBreakEvent createBlockBreakEvent(BlockMock block) {
         return new BlockBreakEvent(block, player);
+    }
+
+    protected void loadConfiguredLimits() {
+
+        plugin.getLimitsService().loadLimits(plugin.getLimitsConfig());
+        for (BlockPlacementLimit limit : plugin.getLimitsService().getBlockPlacementLimits()) {
+            player.addAttachment(plugin, limit.getPermission(), true);
+        }
     }
 }

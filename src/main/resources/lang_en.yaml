@@ -1,3 +1,4 @@
 acf-slimits:
   reload-success: "sLimits successfully reloaded. Loaded {limits} limits."
   save-success: "All limits saved successfully."
+  list-header: "&6You have the following block placement limits:"

@@ -7,6 +7,7 @@ import net.silthus.slimits.events.LimitReachedEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -25,9 +26,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class BlockPlacementLimit implements Listener {
-
     @Getter
     private final String key;
+
     @Getter
     private final Material type;
     @Getter
@@ -56,11 +57,15 @@ public class BlockPlacementLimit implements Listener {
         this(config.getKey(), config.getType(), config.getLimit(), config.getPermission());
     }
 
-    public int getCount(Player player) {
+    public PlayerLimit asPlayerLimit(OfflinePlayer player) {
+        return new PlayerLimit(player, this);
+    }
+
+    public int getCount(OfflinePlayer player) {
         return getPlacedBlocks(player).size();
     }
 
-    public List<PlacedBlock> getPlacedBlocks(Player player) {
+    public List<PlacedBlock> getPlacedBlocks(OfflinePlayer player) {
 
         return placedBlocks.stream()
                 .filter(placedBlock -> placedBlock.isOwner(player.getUniqueId()))
@@ -104,11 +109,13 @@ public class BlockPlacementLimit implements Listener {
         config.save(file);
     }
 
+    public boolean hasPermission(Player player) {
+        return player != null && player.hasPermission(getPermission());
+    }
+
     private boolean isNotApplicable(BlockPlaceEvent event) {
 
-        boolean playerHasNoPermission = !event.getPlayer().hasPermission(getPermission());
-
-        return isNotSameType(event.getBlock()) || playerHasNoPermission;
+        return isNotSameType(event.getBlock()) || !hasPermission(event.getPlayer());
     }
 
     private void fireAndHandleLimitReachedEvent(BlockPlaceEvent event) {

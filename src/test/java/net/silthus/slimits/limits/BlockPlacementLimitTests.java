@@ -316,6 +316,24 @@ public class BlockPlacementLimitTests extends TestBase {
                         + ChatColor.GREEN + "decreased" + ChatColor.GRAY + ": 0/100.");
     }
 
+    @Test
+    void hasPermission_checksThePlayersPermission() {
+
+        assertThat(limit.hasPermission(player)).isTrue();
+    }
+
+    @Test
+    void hasPermission_withNullPlayer_returnsFalse() {
+
+        assertThat(limit.hasPermission(null)).isFalse();
+    }
+
+    @Test
+    void hasPermission_withDifferentPlayer_returnsFalse() {
+
+        assertThat(limit.hasPermission(server.addPlayer())).isFalse();
+    }
+
     private YamlConfiguration getPlacedBlocksFileStore() throws IOException, InvalidConfigurationException {
 
         File blockStore = new File("src/test/resources", "placed_blocks.yml");

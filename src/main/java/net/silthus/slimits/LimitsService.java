@@ -3,15 +3,19 @@ package net.silthus.slimits;
 import lombok.Getter;
 import net.silthus.slimits.config.LimitsConfig;
 import net.silthus.slimits.limits.BlockPlacementLimit;
+import net.silthus.slimits.limits.PlayerLimit;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class LimitsService {
 
@@ -30,6 +34,15 @@ public class LimitsService {
     public void reload() {
 
         loadLimits(plugin.getLimitsConfig());
+    }
+
+    public List<PlayerLimit> getPlayerLimits(OfflinePlayer player) {
+
+        Player onlinePlayer = Bukkit.getPlayer(player.getUniqueId());
+        return getLimits().stream()
+                .filter(limit -> limit.hasPermission(onlinePlayer))
+                .map(limit -> limit.asPlayerLimit(player))
+                .collect(Collectors.toList());
     }
 
     public void loadLimits(LimitsConfig config) {

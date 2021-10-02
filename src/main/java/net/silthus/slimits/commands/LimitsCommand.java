@@ -3,15 +3,20 @@ package net.silthus.slimits.commands;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandPermission;
+import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.locales.MessageKey;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import net.silthus.slimits.SLimitsPlugin;
+import net.silthus.slimits.limits.PlayerLimit;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
+
+import java.util.List;
 
 @CommandAlias("slimits|limits")
-@CommandPermission("slimits.admin")
 public class LimitsCommand extends BaseCommand {
 
     static MessageKey key(String key) {
@@ -24,6 +29,18 @@ public class LimitsCommand extends BaseCommand {
 
     public LimitsCommand(SLimitsPlugin plugin) {
         this.plugin = plugin;
+    }
+
+    @Subcommand("list")
+    @Default
+    public void list(Player player) {
+
+        info("list-header");
+        List<PlayerLimit> limits = plugin.getLimitsService().getPlayerLimits(player);
+        for (PlayerLimit limit : limits) {
+            getCurrentCommandIssuer().sendMessage(ChatColor.GOLD + "  - "
+                    + limit.getType().getKey().getKey() + ": " + limit.getCount() + "/" + limit.getLimit());
+        }
     }
 
     @Subcommand("reload")

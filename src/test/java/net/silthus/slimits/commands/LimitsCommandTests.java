@@ -51,6 +51,21 @@ public class LimitsCommandTests extends TestBase {
         assertThat(player.nextMessage()).contains("All limits saved successfully.");
     }
 
+    @Test
+    void list() {
+
+        loadConfiguredLimits();
+        player.setOp(false);
+        performCommand("slimits list");
+
+        assertThat(player.nextMessage())
+                .contains(ChatColor.GOLD + "You have the following block placement limits:");
+        assertThat(player.nextMessage())
+                .contains("  - stone: 0/10");
+        assertThat(player.nextMessage())
+                .contains("  - bedrock: 0/5");
+    }
+
     private void performCommand(String command) {
         assertThat(player.performCommand(command)).isTrue();
     }
