@@ -18,11 +18,13 @@ public class LimitsConfig {
         return new LimitsConfig().load(config);
     }
 
+    private long saveIntervalTicks = 200;
     private StorageConfig storage = new StorageConfig();
     private List<BlockPlacementLimitConfig> limits = new ArrayList<>();
 
     public LimitsConfig load(ConfigurationSection config) {
 
+        setSaveIntervalTicks(config.getLong("save-interval-ticks", saveIntervalTicks));
         loadStorageConfig(config);
         loadLimitsFromConfig(config);
 

@@ -10,6 +10,7 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,29 +21,29 @@ import java.util.stream.Collectors;
 public class LimitsService {
 
     private final SLimitsPlugin plugin;
+
     @Getter
     private final List<BlockPlacementLimit> limits = new ArrayList<>();
+    private BukkitTask saveTask;
 
     public LimitsService(SLimitsPlugin plugin) {
         this.plugin = plugin;
     }
 
-    public List<BlockPlacementLimit> getBlockPlacementLimits() {
-        return limits;
+    public void schedulePeriodicSaveTask() {
+        if (saveTask != null)
+            saveTask.cancel();
+
+        long ticks = plugin.getLimitsConfig().getSaveIntervalTicks();
+        if (ticks > 0)
+            saveTask = plugin.getServer().getScheduler()
+                .runTaskTimer(plugin, this::saveLimits, ticks, ticks);
     }
 
     public void reload() {
 
         loadLimits(plugin.getLimitsConfig());
-    }
-
-    public List<PlayerLimit> getPlayerLimits(OfflinePlayer player) {
-
-        Player onlinePlayer = Bukkit.getPlayer(player.getUniqueId());
-        return getLimits().stream()
-                .filter(limit -> limit.hasPermission(onlinePlayer))
-                .map(limit -> limit.asPlayerLimit(player))
-                .collect(Collectors.toList());
+        schedulePeriodicSaveTask();
     }
 
     public void loadLimits(LimitsConfig config) {
@@ -55,19 +56,6 @@ public class LimitsService {
         plugin.getLogger().info("loaded " + limits.size() + " limits!");
     }
 
-    public void registerAndLoadLimit(BlockPlacementLimit limit) {
-
-        try {
-            limit.load(getLimitStore(limit));
-
-            Bukkit.getPluginManager().registerEvents(limit, plugin);
-            limits.add(limit);
-        } catch (IOException | InvalidConfigurationException e) {
-            plugin.getLogger().severe("Unable to load limit storage for block_placement limit \"" + limit.getKey() + "\": " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
     public void saveLimits() {
 
         File storagePath = prepareAndGetStoragePath();
@@ -78,6 +66,32 @@ public class LimitsService {
             } catch (IOException e) {
                 plugin.getLogger().severe("Unable to save limit store of \"" + limit.getKey() + "\": " + e.getMessage());
             }
+        }
+    }
+
+    public List<BlockPlacementLimit> getBlockPlacementLimits() {
+        return limits;
+    }
+
+    public List<PlayerLimit> getPlayerLimits(OfflinePlayer player) {
+
+        Player onlinePlayer = Bukkit.getPlayer(player.getUniqueId());
+        return getLimits().stream()
+                .filter(limit -> limit.hasPermission(onlinePlayer))
+                .map(limit -> limit.asPlayerLimit(player))
+                .collect(Collectors.toList());
+    }
+
+    public void registerAndLoadLimit(BlockPlacementLimit limit) {
+
+        try {
+            limit.load(getLimitStore(limit));
+
+            Bukkit.getPluginManager().registerEvents(limit, plugin);
+            limits.add(limit);
+        } catch (IOException | InvalidConfigurationException e) {
+            plugin.getLogger().severe("Unable to load limit storage for block_placement limit \"" + limit.getKey() + "\": " + e.getMessage());
+            e.printStackTrace();
         }
     }
 

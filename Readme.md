@@ -29,6 +29,12 @@ Simply drop the plugin into your `plugins` folder and restart your server.
 There is a main `config.yml` in the plugins directory which holds all the options.
 
 ```yaml
+# The time interval to save the placed blocks to the disk storage
+# set to 0 to disable automatic saving
+save-interval-ticks: 200
+storage:
+  # the location relative to the plugin dir where the placed blocks are saved
+  block_placement: storage/block_placement/
 limits:
   block_placement:
     # permission: slimits.limits.block_placement.stones

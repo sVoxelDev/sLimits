@@ -18,6 +18,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.*;
 
 public class LimitsServiceTests extends TestBase {
 
@@ -188,6 +189,45 @@ public class LimitsServiceTests extends TestBase {
         assertThat(limits)
                 .isNotNull()
                 .hasSize(2);
+    }
+
+    @Test
+    void save_isCalledPeriodically_byTask() {
+
+        plugin.getLimitsService().schedulePeriodicSaveTask();
+
+        server.getScheduler().performTicks(plugin.getLimitsConfig().getSaveIntervalTicks());
+
+        verify(plugin.getLimitsService()).saveLimits();
+    }
+
+    @Test
+    void saveTask_notScheduledIfTicksIsBelowZero() {
+
+        plugin.getLimitsConfig().setSaveIntervalTicks(0);
+        plugin.getLimitsService().schedulePeriodicSaveTask();
+
+        server.getScheduler().performTicks(2000);
+
+        verify(plugin.getLimitsService(), never()).saveLimits();
+    }
+
+    @Test
+    void reload_cancelsAndReschedulesSaveTask() {
+
+        plugin.getLimitsConfig().setSaveIntervalTicks(0);
+        plugin.getLimitsService().schedulePeriodicSaveTask();
+
+        server.getScheduler().performTicks(10);
+
+        verify(plugin.getLimitsService(), never()).saveLimits();
+
+        plugin.getLimitsConfig().setSaveIntervalTicks(20);
+
+        plugin.getLimitsService().reload();
+
+        server.getScheduler().performTicks(20);
+        verify(plugin.getLimitsService(), times(2)).saveLimits();
     }
 
     @Override

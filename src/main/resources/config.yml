@@ -1,7 +1,22 @@
+# The time interval to save the placed blocks to the disk storage
+# set to 0 to disable automatic saving
+save-interval-ticks: 200
 storage:
   block_placement: storage/block_placement/
 limits:
   block_placement:
-    bedrock:
+    # permission: slimits.limits.block_placement.stones
+    stones:
+      type: stone
+      limit: 10
+      # optionally deny breaking limited blocks placed by others
+      # default: false - everybody can break limited blocks of others
+      deny-breaking-by-others: true
+    # permission: slimits.limits.block_placement.bedrocks-10
+    bedrocks-10:
       type: bedrock
-      limit: 5
+      limit: 10
+    # permission: slimits.limits.block_placement.bedrocks-20
+    bedrocks-20:
+      type: bedrock
+      limit: 20
