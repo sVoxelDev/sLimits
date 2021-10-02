@@ -70,7 +70,7 @@ public class LimitsService {
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private File prepareAndGetStoragePath() {
-        File storage = new File(plugin.getDataFolder(), plugin.getLimitsConfig().getStorage().getBlockPlacement());
+        File storage = plugin.getLimitsConfig().getStorage().getStoragePath(plugin);
         storage.mkdirs();
         return storage;
     }

@@ -9,6 +9,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.plugin.RegisteredListener;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
 import java.io.IOException;
@@ -112,14 +113,15 @@ public class LimitsServiceTests extends TestBase {
     }
 
     @Test
-    void save_storesLimits_toDisk() {
+    void save_storesLimits_toDisk(@TempDir File temp) {
 
+        plugin.getLimitsConfig().getStorage().setBlockPlacement(temp.getAbsolutePath());
         loadConfiguredLimits();
         placeBlocks(Material.STONE, 2);
 
         service.saveLimits();
 
-        assertThat(storageDir.list())
+        assertThat(temp.list())
                 .containsExactly(
                         "bedrock.yml",
                         "stones.yml"
