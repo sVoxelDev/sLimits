@@ -82,6 +82,10 @@ public class TestBase {
     }
 
     protected BlockBreakEvent createBlockBreakEvent(BlockMock block) {
+        return createBlockBreakEvent(block, player);
+    }
+
+    protected BlockBreakEvent createBlockBreakEvent(BlockMock block, Player player) {
         return new BlockBreakEvent(block, player);
     }
 

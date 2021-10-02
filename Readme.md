@@ -35,6 +35,9 @@ limits:
     stones:
       type: stone
       limit: 10
+      # optionally deny breaking limited blocks placed by others
+      # default: false - everybody can break limited blocks of others
+      deny-breaking-by-others: true
     # permission: slimits.limits.block_placement.bedrocks-10
     bedrocks-10:
       type: bedrock

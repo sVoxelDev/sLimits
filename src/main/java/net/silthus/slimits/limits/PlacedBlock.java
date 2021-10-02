@@ -93,6 +93,10 @@ public class PlacedBlock implements ConfigurationSerializable {
         return new PlacedBlock(getType(), getLocation(), player);
     }
 
+    public String getOwnerName() {
+        return owner;
+    }
+
     public Optional<Player> getOwner() {
 
         if (getOwnerId() == null)

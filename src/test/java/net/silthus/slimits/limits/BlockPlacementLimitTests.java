@@ -5,10 +5,12 @@ import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import net.silthus.slimits.SLimitsPlugin;
 import net.silthus.slimits.config.BlockPlacementLimitConfig;
 import net.silthus.slimits.TestBase;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.permissions.PermissionAttachment;
@@ -343,6 +345,30 @@ public class BlockPlacementLimitTests extends TestBase {
         placeBlocks(Material.STONE, 10);
 
         assertThat(limit.getCount(player)).isZero();
+    }
+
+    @Test
+    void blockBreak_deniesBreakingLimitedBlocksOfOtherPlayer_ifConfigured() {
+
+        HandlerList.unregisterAll(limit);
+
+        BlockPlacementLimitConfig config = new BlockPlacementLimitConfig(Material.STONE, 10, limit.getPermission());
+        config.setDenyBreakingByOthers(true);
+        limit = new BlockPlacementLimit(config);
+        Bukkit.getPluginManager().registerEvents(limit, plugin);
+
+        placeBlock(Material.STONE, 1, 2, 3);
+        assertThat(limit.getCount(player)).isOne();
+
+        PlayerMock otherPlayer = server.addPlayer();
+        BlockBreakEvent blockBreakEvent = createBlockBreakEvent(createBlock(Material.STONE, 1, 2, 3), otherPlayer);
+
+        callEvent(blockBreakEvent);
+        assertThat(blockBreakEvent.isCancelled()).isTrue();
+        assertThat(otherPlayer.nextMessage())
+                .contains(ChatColor.RED + "This is a limited block placed by " + ChatColor.AQUA + player.getName()
+                        + ChatColor.RED + ". You cannot break it.");
+        assertThat(limit.getCount(player)).isOne();
     }
 
     private YamlConfiguration getPlacedBlocksFileStore() throws IOException, InvalidConfigurationException {

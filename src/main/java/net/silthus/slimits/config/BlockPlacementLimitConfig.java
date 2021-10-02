@@ -20,6 +20,7 @@ public class BlockPlacementLimitConfig {
     private final String key;
     private Material type;
     private int limit;
+    private boolean denyBreakingByOthers = false;
 
     private String permission;
 
@@ -52,6 +53,7 @@ public class BlockPlacementLimitConfig {
         this.type = Objects.requireNonNull(type, typeString + " is not a valid block type.");
         this.limit = config.getInt("limit", 1);
         this.permission = config.getString("permission", getPermission(key));
+        this.denyBreakingByOthers = config.getBoolean("deny-breaking-by-others", false);
     }
 
     private static String getPermission(String suffix) {
