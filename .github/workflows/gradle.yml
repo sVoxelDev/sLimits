@@ -81,6 +81,12 @@ jobs:
           name: build reports
           path: "**/build/reports"
 
+      - name: Publish Unit Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v1
+        if: always()
+        with:
+          files: "**/build/test-results/**/*.xml"
+
   release:
     needs: [build, test]
     if: github.ref == 'refs/heads/master' || 'refs/heads/beta' || github.ref == 'refs/heads/alpha'
