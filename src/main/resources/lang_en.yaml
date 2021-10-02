@@ -4,3 +4,4 @@ acf-slimits:
   list-header: "&6You have the following block placement limits:"
   list-header-other-player: "&b{player}&6 has the following block placement limits:"
   list-no-limits: "&aYou have no limits."
+  list-other-player-no-limits: "&b{player}&6 has no limits."

@@ -2,6 +2,7 @@ package net.silthus.slimits.limits;
 
 import be.seeseemelk.mockbukkit.block.BlockMock;
 import be.seeseemelk.mockbukkit.entity.PlayerMock;
+import net.silthus.slimits.SLimitsPlugin;
 import net.silthus.slimits.config.BlockPlacementLimitConfig;
 import net.silthus.slimits.TestBase;
 import org.bukkit.ChatColor;
@@ -332,6 +333,16 @@ public class BlockPlacementLimitTests extends TestBase {
     void hasPermission_withDifferentPlayer_returnsFalse() {
 
         assertThat(limit.hasPermission(server.addPlayer())).isFalse();
+    }
+
+    @Test
+    void player_withIgnorePermission_isIgnoredFromLimits() {
+
+        player.addAttachment(plugin, SLimitsPlugin.PERMISSION_IGNORE_LIMITS, true);
+
+        placeBlocks(Material.STONE, 10);
+
+        assertThat(limit.getCount(player)).isZero();
     }
 
     private YamlConfiguration getPlacedBlocksFileStore() throws IOException, InvalidConfigurationException {

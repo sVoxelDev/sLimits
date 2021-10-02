@@ -45,7 +45,12 @@ public class LimitsCommand extends BaseCommand {
 
         List<PlayerLimit> limits = plugin.getLimitsService().getPlayerLimits(player);
         if (limits.isEmpty()) {
-            info("list-no-limits");
+            if (isNotSamePlayer)
+                info("list-other-player-no-limits",
+                        "{player}", player.getName()
+                );
+            else
+                info("list-no-limits");
         } else {
             if (isNotSamePlayer)
                 info("list-header-other-player",

@@ -23,6 +23,7 @@ public class SLimitsPlugin extends JavaPlugin {
 
     public static final String PERMISSION_PREFIX = "slimits";
     public static final String PERMISSION_LIMITS_PREFIX = PERMISSION_PREFIX + ".limits";
+    public static final String PERMISSION_IGNORE_LIMITS = PERMISSION_LIMITS_PREFIX + ".ignore";
 
     @Getter
     @Setter(AccessLevel.PACKAGE)

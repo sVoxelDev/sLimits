@@ -61,7 +61,11 @@ limits:
 
 ### Additional Permissions
 
-You can give players the following permission to ignore all limits: `slimits.limits.ignore`
+You can give players the following permission to ignore all limits: `slimits.limits.ignore`.
+
+> **NOTE**  
+> Players with OP rights will have this permission by default and are therefore excluded from all limits.  
+> Explicitly deny them the permission to allow limiting their actions.
 
 ## Commands
 

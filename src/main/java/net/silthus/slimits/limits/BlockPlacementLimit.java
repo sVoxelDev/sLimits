@@ -2,6 +2,7 @@ package net.silthus.slimits.limits;
 
 import lombok.Getter;
 import lombok.NonNull;
+import net.silthus.slimits.SLimitsPlugin;
 import net.silthus.slimits.config.BlockPlacementLimitConfig;
 import net.silthus.slimits.events.LimitReachedEvent;
 import org.bukkit.Bukkit;
@@ -110,7 +111,13 @@ public class BlockPlacementLimit implements Listener {
     }
 
     public boolean hasPermission(Player player) {
-        return player != null && player.hasPermission(getPermission());
+
+        if (player == null)
+            return false;
+
+        boolean isNotIgnored = !player.hasPermission(SLimitsPlugin.PERMISSION_IGNORE_LIMITS);
+
+        return isNotIgnored && player.hasPermission(getPermission());
     }
 
     private boolean isNotApplicable(BlockPlaceEvent event) {
