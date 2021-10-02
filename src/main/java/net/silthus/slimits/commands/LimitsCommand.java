@@ -34,11 +34,12 @@ public class LimitsCommand extends BaseCommand {
     @Default
     @Subcommand("list")
     @CommandCompletion("@players")
+    @CommandPermission("slimits.player.list")
     public void list(@Flags("other,defaultself") @Optional Player player) {
 
         boolean isNotSamePlayer = !player.equals(getCurrentCommandIssuer().getIssuer());
         if (isNotSamePlayer && !getCurrentCommandIssuer().hasPermission("slimits.admin.list")) {
-            getCurrentCommandIssuer().sendMessage(MessageType.ERROR, MessageKeys.PERMISSION_DENIED_PARAMETER, new String[]{"{param}", "player"});
+            getCurrentCommandIssuer().sendMessage(MessageType.ERROR, MessageKeys.PERMISSION_DENIED_PARAMETER, "{param}", "player");
             throw new InvalidCommandArgument(false);
         }
 

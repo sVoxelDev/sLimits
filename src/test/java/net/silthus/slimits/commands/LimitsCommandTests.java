@@ -5,6 +5,7 @@ import co.aikar.commands.BaseCommand;
 import net.silthus.slimits.TestBase;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.permissions.PermissionAttachment;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -58,6 +59,7 @@ public class LimitsCommandTests extends TestBase {
 
         loadConfiguredLimits();
         player.setOp(false);
+        player.addAttachment(plugin, "slimits.player.list", true);
         performCommand("slimits list");
 
         assertThat(player.nextMessage())
@@ -72,6 +74,8 @@ public class LimitsCommandTests extends TestBase {
     void list_withNoLimits_showsDifferentMessage() {
 
         PlayerMock player = server.addPlayer();
+        player.addAttachment(plugin, "slimits.player.list", true);
+
         player.performCommand("slimits list");
 
         assertThat(player.nextMessage())

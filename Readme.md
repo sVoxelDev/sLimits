@@ -58,3 +58,18 @@ limits:
       limit: 10
       permission: my-super-permission
 ```
+
+### Additional Permissions
+
+You can give players the following permission to ignore all limits: `slimits.limits.ignore`
+
+## Commands
+
+Most of the commands are for admins to reload and save limits. Players have one command to show their current limits: `/limits`.
+
+| Command | Permission | Description |
+| ------- | ---------- | ----------- |
+| `/limits` | `slimits.player.list` | Lists all active limits of the player. |
+| `/limits list <player>` | `slimits.admin.list` | Lists the active limits of another online player. |
+| `/limits save` | `slimits.admin.save` | Saves the current limit cache to disk. |
+| `/limits reload` | `slimits.admin.reload` | Saves all limits and reloads them from the config. |
