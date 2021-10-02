@@ -1,3 +1,17 @@
+# [2.0.0-beta.4](https://github.com/Silthus/sLimits/compare/v2.0.0-beta.3...v2.0.0-beta.4) (2021-10-02)
+
+
+### Bug Fixes
+
+* **storage:** absolute storage path not working ([655e98c](https://github.com/Silthus/sLimits/commit/655e98c1b9c153a05fd005d4bf519843ae28f5cf))
+
+
+### Features
+
+* added messages when placing or breaking limited blocks ([98e9355](https://github.com/Silthus/sLimits/commit/98e9355c59ccc0ffb7d6969fc4aa046820dd5540))
+* **cmd:** /limits reload now shows the amount of configured limits ([00d4b39](https://github.com/Silthus/sLimits/commit/00d4b397df4ca5153a3bea06271bacc18f1bfbe7))
+* **cmd:** add /limits command to list current limits ([2deb53c](https://github.com/Silthus/sLimits/commit/2deb53cc48c780e49c070145f9375cffe849179b))
+
 # [2.0.0-beta.3](https://github.com/Silthus/sLimits/compare/v2.0.0-beta.2...v2.0.0-beta.3) (2021-09-29)
 
 
