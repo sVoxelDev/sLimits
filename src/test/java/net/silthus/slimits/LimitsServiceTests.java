@@ -1,6 +1,8 @@
 package net.silthus.slimits;
 
 import net.silthus.slimits.config.LimitsConfig;
+import net.silthus.slimits.events.IncreaseLimitEvent;
+import net.silthus.slimits.events.LimitReachedEvent;
 import net.silthus.slimits.limits.BlockPlacementLimit;
 import net.silthus.slimits.limits.PlacedBlock;
 import net.silthus.slimits.limits.PlayerLimit;

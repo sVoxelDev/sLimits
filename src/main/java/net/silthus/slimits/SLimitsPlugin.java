@@ -8,6 +8,7 @@ import lombok.Setter;
 import net.silthus.slimits.commands.LimitsCommand;
 import net.silthus.slimits.config.LimitsConfig;
 import net.silthus.slimits.limits.PlacedBlock;
+import net.silthus.slimits.listener.LimitEventsListener;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
@@ -29,6 +30,9 @@ public class SLimitsPlugin extends JavaPlugin {
     @Getter
     @Setter(AccessLevel.PACKAGE)
     private LimitsService limitsService;
+    @Getter
+    @Setter(AccessLevel.PACKAGE)
+    private LimitEventsListener limitEventsListener;
     @Getter
     private PaperCommandManager commandManager;
     @Getter
@@ -55,6 +59,8 @@ public class SLimitsPlugin extends JavaPlugin {
 
         setupLimitsService();
 
+        setupListeners();
+
         setupCommands();
     }
 
@@ -73,6 +79,12 @@ public class SLimitsPlugin extends JavaPlugin {
         this.limitsService = new LimitsService(this);
         limitsService.loadLimits(limitsConfig);
         Bukkit.getPluginManager().registerEvents(limitsService, this);
+    }
+
+    private void setupListeners() {
+
+        this.limitEventsListener = new LimitEventsListener(this);
+        Bukkit.getPluginManager().registerEvents(limitEventsListener, this);
     }
 
     private void setupCommands() {

@@ -5,6 +5,7 @@ import net.silthus.slimits.limits.BlockPlacementLimit;
 import net.silthus.slimits.limits.LimitType;
 import net.silthus.slimits.TestBase;
 import org.bukkit.Material;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
@@ -69,6 +70,7 @@ class LimitReachedEventTests extends TestBase {
         LimitReachedEvent event = triggerLimitReachedEvent();
 
         assertThat(event)
+                .isInstanceOf(Event.class)
                 .extracting(
                         LimitReachedEvent::getLimit,
                         LimitReachedEvent::getCount,
@@ -101,6 +103,13 @@ class LimitReachedEventTests extends TestBase {
                 .isTrue();
         assertThat(events.blockPlaceEvent.isCancelled())
                 .isTrue();
+    }
+
+    @Test
+    void uncancelledLimitReached_countsBlockNormally() {
+
+        triggerLimitReachedEvent();
+        assertThat(limit.getCount(player)).isEqualTo(4);
     }
 
     @Test

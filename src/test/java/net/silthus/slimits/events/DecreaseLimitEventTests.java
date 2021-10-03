@@ -5,7 +5,10 @@ import net.silthus.slimits.limits.BlockPlacementLimit;
 import net.silthus.slimits.limits.LimitType;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.event.*;
+import org.bukkit.event.Cancellable;
+import org.bukkit.event.Event;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -14,17 +17,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
-public class IncreaseLimitEventTests extends TestBase {
+public class DecreaseLimitEventTests extends TestBase {
 
     private BlockPlacementLimit limit;
-    private IncreaseLimitEventTests.LimitEventListener listener;
-    private ArgumentCaptor<IncreaseLimitEvent> captor;
+    private LimitEventListener listener;
+    private ArgumentCaptor<DecreaseLimitEvent> captor;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
 
-        captor = ArgumentCaptor.forClass(IncreaseLimitEvent.class);
+        captor = ArgumentCaptor.forClass(DecreaseLimitEvent.class);
 
         limit = new BlockPlacementLimit(Material.STONE, 5, "foo");
         server.getPluginManager().registerEvents(limit, plugin);
@@ -35,60 +38,65 @@ public class IncreaseLimitEventTests extends TestBase {
     }
 
     @Test
-    void limitIncreases_isFiredOnBlockPlace() {
+    void limitDecreases_isFiredOnBlockBreak() {
 
         placeBlock(Material.STONE, 1, 2, 3);
-
         assertThat(limit.getCount(player)).isOne();
-        verify(listener).onIncreaseLimit(captor.capture());
 
-        IncreaseLimitEvent event = captor.getValue();
+        breakBlock(Material.STONE, 1, 2, 3);
+        assertThat(limit.getCount(player)).isZero();
+        verify(listener).onDecreaseLimit(captor.capture());
+
+        DecreaseLimitEvent event = captor.getValue();
         assertThat(event)
                 .isInstanceOf(Cancellable.class)
                 .isInstanceOf(Event.class)
                 .extracting(
-                        IncreaseLimitEvent::getLimitType,
-                        IncreaseLimitEvent::getType,
-                        IncreaseLimitEvent::getPlayer,
-                        IncreaseLimitEvent::getLimit,
-                        IncreaseLimitEvent::getCount,
-                        IncreaseLimitEvent::getNewCount,
-                        IncreaseLimitEvent::getPermission,
-                        IncreaseLimitEvent::isCancelled
+                        DecreaseLimitEvent::getLimitType,
+                        DecreaseLimitEvent::getType,
+                        DecreaseLimitEvent::getPlayer,
+                        DecreaseLimitEvent::getLimit,
+                        DecreaseLimitEvent::getCount,
+                        DecreaseLimitEvent::getNewCount,
+                        DecreaseLimitEvent::getPermission,
+                        DecreaseLimitEvent::isCancelled
                 ).contains(
                         LimitType.BLOCK_PLACEMENT,
                         Material.STONE,
                         player,
                         5,
-                        0,
                         1,
+                        0,
                         "foo"
                 );
+
+        player.nextMessage();
         assertThat(player.nextMessage())
                 .isEqualTo(ChatColor.GRAY + "Your limit for placing stone "
-                        + ChatColor.RED + "increased"
-                        + ChatColor.GRAY + ": 1/5."
+                        + ChatColor.GREEN + "decreased"
+                        + ChatColor.GRAY + ": 0/5."
                 );
     }
 
     @Test
-    void cancelEvent_doesNotIncreaseCounter() {
+    void cancelEvent_doesNotDecreaseCounter() {
 
         listener.cancel = true;
 
         placeBlock(Material.STONE, 1, 2, 3);
+        breakBlock(Material.STONE, 1, 2, 3);
 
-        verify(listener).onIncreaseLimit(captor.capture());
-        assertThat(limit.getCount(player)).isZero();
+        verify(listener).onDecreaseLimit(captor.capture());
+        assertThat(limit.getCount(player)).isOne();
 
         assertThat(captor.getValue())
                 .extracting(
-                        IncreaseLimitEvent::getCount,
-                        IncreaseLimitEvent::getNewCount,
-                        IncreaseLimitEvent::isCancelled
+                        DecreaseLimitEvent::getCount,
+                        DecreaseLimitEvent::getNewCount,
+                        DecreaseLimitEvent::isCancelled
                 ).contains(
-                        0,
                         1,
+                        0,
                         true
                 );
     }
@@ -99,10 +107,12 @@ public class IncreaseLimitEventTests extends TestBase {
         listener.silent = true;
 
         placeBlock(Material.STONE, 1, 2, 3);
+        breakBlock(Material.STONE, 1, 2, 3);
 
-        assertThat(limit.getCount(player)).isOne();
-        verify(listener).onIncreaseLimit(captor.capture());
+        assertThat(limit.getCount(player)).isZero();
+        verify(listener).onDecreaseLimit(captor.capture());
 
+        player.nextMessage();
         assertThat(player.nextMessage()).isNull();
     }
 
@@ -111,7 +121,7 @@ public class IncreaseLimitEventTests extends TestBase {
         boolean silent = false;
 
         @EventHandler
-        public void onIncreaseLimit(IncreaseLimitEvent event) {
+        public void onDecreaseLimit(DecreaseLimitEvent event) {
             event.setCancelled(cancel);
             event.setSilent(silent);
         }
