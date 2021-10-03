@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import net.silthus.slimits.SLimitsPlugin;
 import net.silthus.slimits.config.BlockPlacementLimitConfig;
+import net.silthus.slimits.events.DecreaseLimitEvent;
 import net.silthus.slimits.events.IncreaseLimitEvent;
 import net.silthus.slimits.events.LimitReachedEvent;
 import org.bukkit.Bukkit;
@@ -91,6 +92,9 @@ public class BlockPlacementLimit implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onBlockBreak(BlockBreakEvent event) {
 
+        if (isNotSameType(event.getBlock()))
+            return;
+
         removePlacedBlock(event);
     }
 
@@ -130,7 +134,7 @@ public class BlockPlacementLimit implements Listener {
     private void fireAndHandleLimitReachedEvent(BlockPlaceEvent event) {
 
         LimitReachedEvent limitReachedEvent = fireLimitReachedEvent(event);
-        if (!limitReachedEvent.isCancelled() && limitReachedEvent.isCancelBlockPlacement())
+        if (limitReachedEvent.isCancelBlockPlacement())
             cancelBlockPlacement(event);
         else
             addPlacedBlock(event.getPlayer(), event.getBlockPlaced());
@@ -139,7 +143,7 @@ public class BlockPlacementLimit implements Listener {
     private LimitReachedEvent fireLimitReachedEvent(BlockPlaceEvent blockPlaceEvent) {
 
         Player player = blockPlaceEvent.getPlayer();
-        LimitReachedEvent event = new LimitReachedEvent(player, type, getLimit(), getCount(player), getPermission());
+        LimitReachedEvent event = new LimitReachedEvent(this, player, getCount(player));
         Bukkit.getPluginManager().callEvent(event);
 
         return event;
@@ -150,33 +154,45 @@ public class BlockPlacementLimit implements Listener {
         if (isNotSameType(block))
             return;
 
-        IncreaseLimitEvent event = new IncreaseLimitEvent();
+        int count = getCount(player);
+        IncreaseLimitEvent event = new IncreaseLimitEvent(this, player, count, count + 1);
         Bukkit.getPluginManager().callEvent(event);
 
+        if (event.isCancelled()) return;
+
         placedBlocks.add(new PlacedBlock(block, player));
-        player.sendMessage(ChatColor.GRAY + "Your limit for placing "
+        if (event.isNotSilent())
+            player.sendMessage(ChatColor.GRAY + "Your limit for placing "
                 + getType().getKey().getKey() + " " + ChatColor.RED + "increased"
                 + ChatColor.GRAY + ": " + getCount(player) + "/" + getLimit() + "."
-        );
+            );
     }
 
     private boolean hasReachedLimit(Player player) {
         return getCount(player) >= getLimit();
     }
 
-    private void removePlacedBlock(BlockBreakEvent event) {
+    private void removePlacedBlock(BlockBreakEvent blockBreakEvent) {
 
-        if (isNotSameType(event.getBlock()))
+        if (checkAndDenyBlockBreaking(blockBreakEvent))
             return;
 
-        if (checkAndDenyBlockBreaking(event))
-            return;
+        PlacedBlock placedBlock = new PlacedBlock(blockBreakEvent.getBlock());
+        if (placedBlocks.contains(placedBlock)) {
 
-        if (placedBlocks.remove(new PlacedBlock(event.getBlock()))) {
-            event.getPlayer().sendMessage(ChatColor.GRAY + "Your limit for placing "
-                    + getType().getKey().getKey() + " " + ChatColor.GREEN + "decreased"
-                    + ChatColor.GRAY + ": " + getCount(event.getPlayer()) + "/" + getLimit() + "."
-            );
+            Player player = blockBreakEvent.getPlayer();
+            int count = getCount(player);
+            DecreaseLimitEvent event = new DecreaseLimitEvent(this, player, count, count - 1);
+            Bukkit.getPluginManager().callEvent(event);
+
+            if (event.isCancelled()) return;
+
+            placedBlocks.remove(placedBlock);
+            if (event.isNotSilent())
+                player.sendMessage(ChatColor.GRAY + "Your limit for placing "
+                        + getType().getKey().getKey() + " " + ChatColor.GREEN + "decreased"
+                        + ChatColor.GRAY + ": " + getCount(player) + "/" + getLimit() + "."
+                );
         }
     }
 

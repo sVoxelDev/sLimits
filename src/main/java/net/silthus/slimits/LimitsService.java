@@ -2,6 +2,7 @@ package net.silthus.slimits;
 
 import lombok.Getter;
 import net.silthus.slimits.config.LimitsConfig;
+import net.silthus.slimits.events.IncreaseLimitEvent;
 import net.silthus.slimits.events.LimitReachedEvent;
 import net.silthus.slimits.limits.BlockPlacementLimit;
 import net.silthus.slimits.limits.PlayerLimit;
@@ -101,21 +102,6 @@ public class LimitsService implements Listener {
             plugin.getLogger().severe("Unable to load limit storage for block_placement limit \"" + limit.getKey() + "\": " + e.getMessage());
             e.printStackTrace();
         }
-    }
-
-    @EventHandler(ignoreCancelled = true)
-    public void onLimitReached(LimitReachedEvent event) {
-
-        Optional<BlockPlacementLimit> highestLimit = getHighestBlockPlacementLimit(event.getType(), event.getPlayer());
-        if (highestLimit.map(limit -> !limit.getPermission().equals(event.getPermission())).orElse(false)) {
-            event.setCancelled(true);
-        }
-    }
-
-    private Optional<BlockPlacementLimit> getHighestBlockPlacementLimit(Material type, Player player) {
-        return getBlockPlacementLimits(type)
-                .stream().filter(limit -> limit.hasPermission(player))
-                .max(Comparator.comparingInt(BlockPlacementLimit::getLimit));
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
