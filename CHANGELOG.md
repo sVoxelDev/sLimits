@@ -1,3 +1,10 @@
+# [2.0.0-beta.9](https://github.com/Silthus/sLimits/compare/v2.0.0-beta.8...v2.0.0-beta.9) (2021-10-03)
+
+
+### Bug Fixes
+
+* **limits:** suppress messages for duplicate limits and count blocks silently ([8aec7d4](https://github.com/Silthus/sLimits/commit/8aec7d4c3cdcd122b48633a38f95e8f94d821632))
+
 # [2.0.0-beta.8](https://github.com/Silthus/sLimits/compare/v2.0.0-beta.7...v2.0.0-beta.8) (2021-10-02)
 
 
