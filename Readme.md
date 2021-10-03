@@ -2,6 +2,7 @@
 
 [![Build Status](https://github.com/Silthus/sLimits/workflows/Build/badge.svg)](../../actions?query=workflow%3ABuild)
 [![GitHub release (latest SemVer including pre-releases)](https://img.shields.io/github/v/release/Silthus/sLimits?include_prereleases&label=release)](../../releases)
+[![codecov](https://codecov.io/gh/Silthus/sLimits/branch/master/graph/badge.svg?token=4LSRY6PW4Q)](https://codecov.io/gh/Silthus/sLimits)
 ![Spiget tested server versions](https://img.shields.io/spiget/tested-versions/78922)
 [![Spiget Downloads](https://img.shields.io/spiget/downloads/78922)](https://www.spigotmc.org/resources/slimits.78922/)
 [![Spiget Rating](https://img.shields.io/spiget/rating/78922)](https://www.spigotmc.org/resources/slimits.78922/)
