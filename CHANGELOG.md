@@ -1,3 +1,10 @@
+## [2.0.1](https://github.com/Silthus/sLimits/compare/v2.0.0...v2.0.1) (2021-10-04)
+
+
+### Bug Fixes
+
+* **release:** publish shaded artifacts ([d5f7e51](https://github.com/Silthus/sLimits/commit/d5f7e51045116c0147086604e812c9b75cb5957c))
+
 # [2.0.0](https://github.com/Silthus/sLimits/compare/v1.9.0...v2.0.0) (2021-10-03)
 
 
