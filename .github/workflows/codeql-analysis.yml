@@ -56,16 +56,32 @@ jobs:
     - name: Autobuild
       uses: github/codeql-action/autobuild@v1
 
-    # ℹ️ Command-line programs to run using the OS shell.
-    # 📚 https://git.io/JvXDl
+    - name: Set up JDK 16
+      uses: actions/setup-java@v1
+      with:
+        java-version: 16
 
-    # ✏️ If the Autobuild fails above, remove it and uncomment the following three lines
-    #    and modify them (or add more) to build your code if your project
-    #    uses a compiled language
+    - name: Cache Gradle
+      id: cache-gradle
+      uses: actions/cache@v1
+      with:
+        path: ~/.gradle
+        key: ${{ runner.os }}-gradle
 
-    #- run: |
-    #   make bootstrap
-    #   make release
+    - uses: actions/checkout@v1
+
+    - name: Grant execute permission to gradlew
+      run: chmod +x gradlew
+
+    - name: Build
+      run: ./gradlew build -x test
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        path: "**/build/libs"
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
