@@ -1,3 +1,11 @@
+## [2.0.2](https://github.com/Silthus/sLimits/compare/v2.0.1...v2.0.2) (2021-10-10)
+
+
+### Bug Fixes
+
+* **build:** revert mockbukkit update ([f21a149](https://github.com/Silthus/sLimits/commit/f21a149d0ea90d94c4a95bc88e486de1ad118aa2))
+* **release:** use gradle release v1.5.0 ([9fbf21a](https://github.com/Silthus/sLimits/commit/9fbf21aefad6622763036364ca190601bf8d9a80))
+
 ## [2.0.1](https://github.com/Silthus/sLimits/compare/v2.0.0...v2.0.1) (2021-10-04)
 
 
