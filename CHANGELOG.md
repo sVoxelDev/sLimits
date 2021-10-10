@@ -1,3 +1,10 @@
+## [2.0.3](https://github.com/Silthus/sLimits/compare/v2.0.2...v2.0.3) (2021-10-10)
+
+
+### Bug Fixes
+
+* trigger debug release ([5f799e0](https://github.com/Silthus/sLimits/commit/5f799e0e16ec2f7c9adcedad832b966417eba6a3))
+
 ## [2.0.2](https://github.com/Silthus/sLimits/compare/v2.0.1...v2.0.2) (2021-10-10)
  
 
