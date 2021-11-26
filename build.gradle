@@ -63,7 +63,7 @@ dependencies {
     //Test dependencies
     testImplementation 'org.junit.jupiter:junit-jupiter:5.+'
     testImplementation "org.mockito:mockito-core:4.+"
-    testImplementation 'com.github.seeseemelk:MockBukkit-v1.17:1.10.1'
+    testImplementation 'com.github.seeseemelk:MockBukkit-v1.17:1.10.4'
     testImplementation 'org.assertj:assertj-core:3.+'
 }
 
