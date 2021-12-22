@@ -58,7 +58,7 @@ dependencies {
     implementation spigot(mcVersion)
 
     //Add dependencies here
-    implementation "co.aikar:acf-paper:0.5.0-SNAPSHOT"
+    implementation "co.aikar:acf-paper:0.5.1-SNAPSHOT"
 
     //Test dependencies
     testImplementation 'org.junit.jupiter:junit-jupiter:5.+'
